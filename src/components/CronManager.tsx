@@ -346,6 +346,7 @@ function CronManager() {
                       borderRadius: '10px',
                       border: '1px solid var(--c-secondary-bg)',
                       background: 'var(--c-bg)',
+                      color: 'var(--c-text)',
                       fontSize: '14px'
                     }}
                   >
@@ -366,6 +367,7 @@ function CronManager() {
                       borderRadius: '10px',
                       border: '1px solid var(--c-secondary-bg)',
                       background: 'var(--c-bg)',
+                      color: 'var(--c-text)',
                       fontSize: '14px'
                     }}
                   >
