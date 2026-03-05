@@ -45,32 +45,34 @@ pnpm server       # api on :3002
 | Flashcards | German language flashcards (A2/B1) |
 | VoiceNotes | Voice recording with playback |
 | VoiceToText | Voice message transcription viewer |
+| **Scheduler** | **Manage agent cron schedules** |
 
 Other features: command palette (Cmd+K), MCP tools manager, widget settings, skills runner.
 
 ## API Endpoints
 
-All `GET` only. Served by `api-server.ts` on port 3002 (configurable via `PORT`).
+All `GET` unless noted. Served by `api-server.ts` on port 3002 (configurable via `PORT`).
 
-| Endpoint | Returns |
-|---|---|
-| `/api/status` | Health check + service list |
-| `/api/system` | CPU, memory, disk, network, uptime |
-| `/api/costs` | 30-day LLM cost breakdown |
-| `/api/jobs` | Job listings |
-| `/api/omad` | OMAD streak + history |
-| `/api/projects` | Project update entries |
-| `/api/wellbeing` | Mood entries + stats |
-| `/api/voice` | Voice note files |
-| `/api/voice-transcripts` | Transcripts (supports `?limit=N`) |
-| `/api/voice-stats` | Transcript counts |
+| Endpoint | Method | Returns |
+|---|---|---|
+| `/api/status` | GET | Health check + service list |
+| `/api/system` | GET | CPU, memory, disk, network, uptime |
+| `/api/costs` | GET | 30-day LLM cost breakdown |
+| `/api/jobs` | GET | Job listings |
+| `/api/omad` | GET | OMAD streak + history |
+| `/api/projects` | GET | Project update entries |
+| `/api/wellbeing` | GET | Mood entries + stats |
+| `/api/voice` | GET | Voice note files |
+| `/api/voice-transcripts` | GET | Transcripts (supports `?limit=N`) |
+| `/api/voice-stats` | GET | Transcript counts |
+| `/api/crons` | GET/POST | Agent schedules (POST to update) |
 
 ## Project Structure
 
 ```
 miniapp/
 ├── src/
-│   ├── components/       # 16 widget/feature components (.tsx)
+│   ├── components/       # 17 widget/feature components (.tsx)
 │   ├── App.tsx            # Main app shell + tabs + auth
 │   ├── App.css            # Telegram-themed styles (CSS vars)
 │   └── main.tsx           # Entry point
