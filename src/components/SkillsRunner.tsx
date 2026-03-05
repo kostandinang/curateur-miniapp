@@ -152,7 +152,8 @@ function SkillsRunner() {
       setResult({ success: false, message: 'Failed to run skill. Try again.' })
     } finally {
       setRunning(false)
-      if (selectedSkill?.inputs.length === 0) {
+      // Close window for skills with no inputs, or for new/reset always
+      if (selectedSkill?.inputs.length === 0 || skillId === 'new' || skillId === 'reset') {
         setSelectedSkill(null)
       }
     }
