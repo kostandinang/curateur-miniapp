@@ -1,5 +1,6 @@
 import { Calendar, CheckCircle2, Clock, Flame, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
 
 interface HistoryEntry {
   date: string
@@ -220,7 +221,7 @@ function OMADTracker() {
           </div>
           <div>
             <div style={{ fontWeight: 600, fontSize: '15px' }}>Next Check-in</div>
-            <div style={{ fontSize: '13px', color: 'var(--c-hint)' }}>Today at 4:30 PM UTC</div>
+            <div style={{ fontSize: '13px', color: 'var(--c-hint)' }}>Today at {formatUtcToLocal(18, 0)} ({getTimezoneAbbr()})</div>
           </div>
         </div>
 
@@ -309,7 +310,7 @@ function OMADTracker() {
 
         <div className="info-item">
           <div className="label">Check-in Time</div>
-          <div className="value">4:30 PM</div>
+          <div className="value">{formatUtcToLocal(18, 0)}</div>
         </div>
 
         <div className="info-item">

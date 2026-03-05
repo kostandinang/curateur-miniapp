@@ -1,5 +1,6 @@
 import { Brain, ChevronLeft, ChevronRight, Clock, RotateCw, Trophy, Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
 
 interface FlashcardWord {
   de: string
@@ -638,7 +639,7 @@ function Flashcards() {
       <div className="card" style={{ fontSize: '13px', color: 'var(--c-hint)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
           <Clock size={14} />
-          <span>Daily reminder at 10 PM</span>
+          <span>Daily reminder at {formatUtcToLocal(22, 0)} ({getTimezoneAbbr()})</span>
         </div>
         <div>New words every day • A2/B1 Level</div>
       </div>

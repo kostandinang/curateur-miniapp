@@ -32,23 +32,35 @@ interface CurateurLogoProps {
   size?: number
 }
 
-// Curateur Logo Component
+// Curateur Logo Component - Creative "C" design
 function CurateurLogo({ size = 36 }: CurateurLogoProps) {
   return (
-    <div className="logo" style={{ width: size, height: size }}>
+    <div 
+      className="logo" 
+      style={{ 
+        width: size, 
+        height: size, 
+        borderRadius: '12px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+      }}
+    >
       <svg
-        width={size * 0.6}
-        height={size * 0.6}
+        width={size * 0.55}
+        height={size * 0.55}
         viewBox="0 0 24 24"
         fill="none"
         stroke="white"
-        strokeWidth="2.5"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-        <path d="M2 12l10 5 10-5" />
+        {/* Stylized C that looks like a claw/pincer */}
+        <path d="M19 5c-3-3-8-3-11 0s-3 8 0 11 8 3 11 0" />
+        <circle cx="8" cy="12" r="2" fill="white" stroke="none" />
       </svg>
     </div>
   )
@@ -210,7 +222,7 @@ function App() {
           Curateur
         </h1>
 
-        <p style={{ color: '#666', marginBottom: '32px', fontSize: '15px' }}>Private access only</p>
+        <p style={{ color: '#666', marginBottom: '32px', fontSize: '15px' }}>Hey there! Let's get you in 👋</p>
 
         <form onSubmit={handleUnlock} style={{ width: '100%', maxWidth: '280px' }}>
           <input
@@ -258,7 +270,7 @@ function App() {
           <CurateurLogo />
           <div className="brand">
             <h1>Curateur</h1>
-            <span>Personal Dashboard</span>
+            <span>Your friendly digital companion 🦞</span>
           </div>
 
           {/* Command Palette Trigger */}

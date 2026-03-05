@@ -1,5 +1,6 @@
 import { type ChangeEvent, useEffect, useState } from 'react'
 import { Clock, Calendar, Check, AlertCircle, RotateCcw, Save, Sun, Moon, Briefcase, TrendingUp, BookOpen, Flame, DollarSign, FolderKanban } from 'lucide-react'
+import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
 
 interface AgentConfig {
   id: string
@@ -124,9 +125,8 @@ function buildCron(minute: number, hour: number, type: string): string {
 }
 
 function formatTime(hour: number, minute: number): string {
-  const h = hour.toString().padStart(2, '0')
-  const m = minute.toString().padStart(2, '0')
-  return `${h}:${m}`
+  // Convert UTC to local time for display
+  return formatUtcToLocal(hour, minute)
 }
 
 function CronManager() {
@@ -459,6 +459,7 @@ function CronManager() {
           <Calendar size={14} />
           <span>Cron format: minute hour day month weekday</span>
         </div>
+        <div style={{ marginBottom: '4px' }}>Times shown in your local timezone ({getTimezoneAbbr()})</div>
         <div>Changes apply immediately after saving</div>
       </div>
     </>
