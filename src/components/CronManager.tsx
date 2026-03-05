@@ -144,7 +144,8 @@ function CronManager() {
   const fetchSchedules = async () => {
     try {
       setLoading(true)
-      const res = await fetch('/api/crons')
+      // Add cache-busting query param
+      const res = await fetch(`/api/crons?_=${Date.now()}`)
       if (!res.ok) throw new Error('Failed to fetch')
       const data: ScheduleResponse = await res.json()
 
@@ -198,7 +199,8 @@ function CronManager() {
         throw new Error(err.error || 'Failed to save')
       }
 
-      setOriginalSchedules(schedules)
+      // Re-fetch to confirm changes
+      await fetchSchedules()
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {

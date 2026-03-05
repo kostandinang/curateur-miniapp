@@ -184,16 +184,17 @@ function Wellbeing() {
   }
 
   const getWeeklyData = (): WeeklyDataPoint[] => {
-    const days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    return days.map((day, idx) => {
+    // Show last 7 days with correct day names
+    return Array.from({ length: 7 }, (_, idx) => {
       const d = new Date()
       d.setDate(d.getDate() - (6 - idx))
       const dateStr: string = d.toISOString().split('T')[0]
+      const dayName: string = d.toLocaleDateString('en-US', { weekday: 'short' })
       const dayEntry: WellbeingEntry | undefined = entries.find((e) =>
         e.timestamp?.startsWith(dateStr),
       )
       return {
-        day,
+        day: dayName,
         mood: dayEntry?.mood || 0,
         hasEntry: !!dayEntry,
       }

@@ -54,6 +54,7 @@ interface OMADEntry {
   time: string
   note: string
   success: boolean
+  lineNum?: number
 }
 
 interface SystemStats {
@@ -377,8 +378,10 @@ function getOMADData() {
 
     const content = readFileSync(memoryPath, 'utf8') as string
     const entries: OMADEntry[] = []
+    let lineNum = 0
 
     for (const line of content.split('\n')) {
+      lineNum++
       const match = line.match(/^OMAD:\s*(\d{4}-\d{2}-\d{2})\s*(\d{2}:\d{2})\s*UTC\s*-\s*(.+)$/)
       if (match) {
         const note = match[3]
@@ -387,19 +390,42 @@ function getOMADData() {
           date: match[1],
           time: match[2],
           note,
+          lineNum,
           success:
             !lower.includes('broke') && !lower.includes('missed') && !lower.includes('failed'),
         })
       }
     }
 
-    const sorted = entries.sort(
+    // Sort by date/time desc for API response
+    const sorted = entries.sort((a, b) => {
+      const timeDiff = new Date(`${b.date}T${b.time}`).getTime() - new Date(`${a.date}T${a.time}`).getTime()
+      if (timeDiff !== 0) return timeDiff
+      return (b.lineNum || 0) - (a.lineNum || 0)
+    })
+
+    // Get only the latest entry per date (use timestamp to determine latest, not line number)
+    const latestPerDate = new Map<string, OMADEntry>()
+    for (const entry of entries) {
+      const existing = latestPerDate.get(entry.date)
+      if (!existing) {
+        latestPerDate.set(entry.date, entry)
+      } else {
+        // Compare timestamps - keep the later one
+        const entryTime = new Date(`${entry.date}T${entry.time}`).getTime()
+        const existingTime = new Date(`${existing.date}T${existing.time}`).getTime()
+        if (entryTime > existingTime) {
+          latestPerDate.set(entry.date, entry)
+        }
+      }
+    }
+    const uniqueEntries = Array.from(latestPerDate.values()).sort(
       (a, b) =>
         new Date(`${b.date}T${b.time}`).getTime() - new Date(`${a.date}T${a.time}`).getTime(),
     )
 
     let streak = 0
-    for (const entry of sorted) {
+    for (const entry of uniqueEntries) {
       if (entry.success) streak++
       else break
     }
@@ -409,7 +435,7 @@ function getOMADData() {
       const d = new Date()
       d.setDate(d.getDate() - i)
       const dateStr = d.toISOString().split('T')[0]
-      const entry = sorted.find((e) => e.date === dateStr)
+      const entry = latestPerDate.get(dateStr)
 
       history.push({
         date: dateStr,
@@ -655,6 +681,11 @@ const routes: Record<string, RouteHandler> = {
   },
 
   '/api/crons': (req, res, url) => {
+    // Disable caching for this endpoint
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.setHeader('Pragma', 'no-cache')
+    res.setHeader('Expires', '0')
+    
     if (req.method === 'GET' || req.method === undefined) {
       json(res, getCrons())
     } else if (req.method === 'POST') {
