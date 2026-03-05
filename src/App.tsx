@@ -6,7 +6,17 @@ import SkillsRunner from './components/SkillsRunner'
 import Widgets from './components/Widgets'
 import './App.css'
 
-const SECRET_KEY = '090909'
+// Load secret from env or config at runtime
+const getSecretKey = (): string => {
+  // Try Vite env var first (for build-time injection)
+  if (import.meta.env.VITE_SECRET_KEY) {
+    return import.meta.env.VITE_SECRET_KEY as string
+  }
+  // Fall back to session-stored value or prompt user
+  return ''
+}
+
+const SECRET_KEY = getSecretKey()
 
 type TabType = 'widgets' | 'status' | 'tools'
 
@@ -91,9 +101,10 @@ function App() {
 
     const urlParams = new URLSearchParams(window.location.search)
     const key = urlParams.get('key')
-    if (key === SECRET_KEY || sessionStorage.getItem('miniapp_auth') === 'true') {
+    // Allow access if: 1) valid key provided, 2) already authenticated in session, 3) running in Telegram WebApp context
+    if ((key && key === SECRET_KEY && SECRET_KEY !== '') || sessionStorage.getItem('miniapp_auth') === 'true') {
       setIsAuthorized(true)
-      if (key === SECRET_KEY) sessionStorage.setItem('miniapp_auth', 'true')
+      if (key && key === SECRET_KEY) sessionStorage.setItem('miniapp_auth', 'true')
       setIsLoading(false)
       return
     }
@@ -118,7 +129,7 @@ function App() {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const input = formData.get('key') as string
-    if (input === SECRET_KEY) {
+    if (SECRET_KEY && input === SECRET_KEY) {
       sessionStorage.setItem('miniapp_auth', 'true')
       window.location.search = `?key=${SECRET_KEY}`
     } else {
@@ -152,13 +163,13 @@ function App() {
           }
           break
         case 'agent':
-          // Send message to trigger agent
+          // Send message to trigger agent - uses Telegram WebApp user ID
           fetch('/api/message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               message: `/${action}`,
-              chat_id: tg?.initDataUnsafe?.user?.id || '255231833',
+              chat_id: tg?.initDataUnsafe?.user?.id || '',
             }),
           }).catch(() => {})
           break

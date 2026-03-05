@@ -9,6 +9,18 @@ const WORKSPACE_DIR = process.env.WORKSPACE_DIR || '/root/.openclaw/workspace'
 const PORT = parseInt(process.env.PORT || '3002', 10)
 const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || '*'
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || ''
+// Load bot token from OpenClaw config
+function getBotToken(): string {
+  try {
+    const configPath = '/root/.openclaw/openclaw.json'
+    const config = JSON.parse(readFileSync(configPath, 'utf8'))
+    return config.channels?.telegram?.botToken || ''
+  } catch {
+    return ''
+  }
+}
+
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || getBotToken()
 
 // Safe interface name pattern — alphanumeric, hyphens, underscores only
 const IFACE_PATTERN = /^[a-zA-Z0-9_-]+$/
@@ -898,64 +910,63 @@ const routes: Record<string, RouteHandler> = {
 
     let body = ''
     req.on('data', chunk => body += chunk)
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const { message, chat_id } = JSON.parse(body)
-
-        // Process commands
-        let result = { success: true, message: 'Command received' }
-
-        if (message === '/status') {
-          const oc = getOpenClawStatus()
-          result = {
-            success: true,
-            message: `OpenClaw ${oc?.version || 'unknown'} | ${oc?.gateway.reachable ? '✅ Connected' : '❌ Disconnected'} | ${oc?.sessions.total || 0} sessions`
-          }
-        } else if (message === '/new') {
-          // Send /new command to Telegram to trigger new session
-          try {
-            const OPENCLAW_BIN = '/usr/bin/openclaw'
-            // Send /new message to the main Telegram chat
-            const output = execSync(
-              `${OPENCLAW_BIN} message send --channel telegram --target 255231833 --message "/new"`,
-              {
-                encoding: 'utf8',
-                timeout: 15000,
-                env: { ...process.env, HOME: '/root' }
-              }
-            )
-            result = { success: true, message: '🆕 New session started! Check Telegram.' }
-          } catch (err: unknown) {
-            // Even if command returns non-zero, the message might have been sent
-            result = { success: true, message: '🆕 New session command sent to Telegram.' }
-          }
-        } else if (message === '/reset') {
-          // Send /reset command to Telegram
-          try {
-            const OPENCLAW_BIN = '/usr/bin/openclaw'
-            execSync(
-              `${OPENCLAW_BIN} message send --channel telegram --target 255231833 --message "/reset"`,
-              {
-                encoding: 'utf8',
-                timeout: 15000,
-                env: { ...process.env, HOME: '/root' }
-              }
-            )
-            result = { success: true, message: '🔄 Reset command sent! Check Telegram.' }
-          } catch (err: unknown) {
-            result = { success: true, message: '🔄 Reset command sent to Telegram.' }
-          }
-        } else if (message.startsWith('search memory')) {
-          const query = message.replace('search memory', '').trim()
-          result = { success: true, message: `🔍 Searching memory for: "${query}"` }
-        } else if (message.startsWith('summarize loom')) {
-          const url = message.replace('summarize loom', '').trim()
-          result = { success: true, message: `🎥 Processing Loom video...` }
-        } else {
-          result = { success: true, message: `📤 Sent: ${message}` }
+        
+        if (!TELEGRAM_BOT_TOKEN) {
+          jsonError(res, 'Bot token not configured', 500)
+          return
         }
 
-        json(res, result)
+        const targetChatId = chat_id || process.env.DEFAULT_CHAT_ID
+        if (!targetChatId) {
+          jsonError(res, 'Chat ID not provided', 400)
+          return
+        }
+
+        // Send message via Telegram Bot API
+        const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`
+        const telegramBody = JSON.stringify({
+          chat_id: targetChatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+
+        const telegramRes = await new Promise<http.IncomingMessage>((resolve, reject) => {
+          const req = https.request(
+            telegramUrl,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(telegramBody)
+              }
+            },
+            (res) => resolve(res)
+          )
+          req.on('error', reject)
+          req.write(telegramBody)
+          req.end()
+        })
+
+        let telegramData = ''
+        telegramRes.on('data', chunk => telegramData += chunk)
+        telegramRes.on('end', () => {
+          try {
+            const result = JSON.parse(telegramData)
+            if (result.ok) {
+              json(res, { 
+                success: true, 
+                message: `Sent: ${message}`
+              })
+            } else {
+              jsonError(res, `Telegram API error: ${result.description}`, 500)
+            }
+          } catch {
+            jsonError(res, 'Failed to parse Telegram response', 500)
+          }
+        })
       } catch {
         jsonError(res, 'Invalid JSON', 400)
       }

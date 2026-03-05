@@ -132,12 +132,16 @@ function SkillsRunner() {
           break
       }
 
+      // Get Telegram user ID from WebApp context if available
+      const tg = (window as unknown as { Telegram?: { WebApp?: { initDataUnsafe?: { user?: { id: number }; chat?: { id: number } } } } }).Telegram?.WebApp
+      const chatId = tg?.initDataUnsafe?.user?.id || tg?.initDataUnsafe?.chat?.id
+
       const response = await fetch('/api/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: command,
-          chat_id: 1,
+          chat_id: chatId || '',
         }),
       })
 
