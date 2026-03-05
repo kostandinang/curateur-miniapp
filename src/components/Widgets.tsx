@@ -2,6 +2,7 @@ import {
   Activity,
   BookOpen,
   Briefcase,
+  Clock,
   DollarSign,
   FileText,
   Flame,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react'
 import { type ComponentType, useEffect, useState } from 'react'
 import CostHeatmap from './CostHeatmap'
+import CronManager from './CronManager'
 import ExchangeRate from './ExchangeRate'
 import Flashcards from './Flashcards'
 import JobSearch from './JobSearch'
@@ -36,6 +38,7 @@ interface WidgetConfig {
 const ALL_WIDGETS: WidgetConfig[] = [
   { id: 'rates', label: 'Rates', icon: TrendingUp, color: '#667eea', component: ExchangeRate },
   { id: 'monitor', label: 'Monitor', icon: Activity, color: '#06b6d4', component: SystemMonitor },
+  { id: 'cron', label: 'Scheduler', icon: Clock, color: '#f59e0b', component: CronManager },
   { id: 'omad', label: 'OMAD', icon: Flame, color: '#f97316', component: OMADTracker },
   { id: 'cost', label: 'Cost', icon: DollarSign, color: '#16a34a', component: CostHeatmap },
   { id: 'voice', label: 'Voice', icon: Mic, color: '#8b5cf6', component: VoiceNotes },
@@ -49,13 +52,7 @@ const ALL_WIDGETS: WidgetConfig[] = [
   { id: 'jobs', label: 'Jobs', icon: Briefcase, color: '#0ea5e9', component: JobSearch },
   { id: 'flashcards', label: 'Learn 🇩🇪', icon: BookOpen, color: '#ec4899', component: Flashcards },
   { id: 'wellbeing', label: 'Mood', icon: Heart, color: '#f43f5e', component: Wellbeing },
-  {
-    id: 'updates',
-    label: 'Projects',
-    icon: FolderKanban,
-    color: '#f97316',
-    component: ProjectUpdates,
-  },
+  { id: 'updates', label: 'Projects', icon: FolderKanban, color: '#f97316', component: ProjectUpdates },
 ]
 
 interface WidgetsProps {
