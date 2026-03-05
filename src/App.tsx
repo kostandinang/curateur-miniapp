@@ -329,7 +329,7 @@ function App() {
             <Widgets activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
           {activeTab === 'status' && <SessionStatus />}
-          {activeTab === 'tools' && <SkillsRunner tg={tg} />}
+          {activeTab === 'tools' && <SkillsRunner />}
         </main>
       </div>
 

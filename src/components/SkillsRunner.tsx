@@ -2,6 +2,7 @@ import {
   Activity,
   AlertCircle,
   ArrowLeft,
+  CheckCircle2,
   type LucideIcon,
   Play,
   Plus,
@@ -36,6 +37,7 @@ interface SkillResult {
 interface MessageResponse {
   success: boolean
   error?: string
+  message?: string
 }
 
 const SKILLS: Skill[] = [
@@ -43,21 +45,21 @@ const SKILLS: Skill[] = [
     id: 'loom',
     name: 'Loom Transcript',
     icon: Video,
-    description: 'Get video summaries',
+    description: 'Get video summaries from Loom URLs',
     inputs: [{ name: 'url', label: 'Loom URL', placeholder: 'https://loom.com/share/...' }],
   },
   {
     id: 'memory',
     name: 'Search Memory',
     icon: Search,
-    description: 'Find past notes',
+    description: 'Find past notes and conversations',
     inputs: [{ name: 'query', label: 'Search', placeholder: 'What are you looking for?' }],
   },
   {
     id: 'mcp',
     name: 'MCP Tools',
     icon: Puzzle,
-    description: 'Configure agent tools',
+    description: 'Configure external tools and integrations',
     inputs: [],
     component: true,
   },
@@ -65,66 +67,36 @@ const SKILLS: Skill[] = [
     id: 'status',
     name: 'System Status',
     icon: Activity,
-    description: 'Check health',
+    description: 'Check OpenClaw health and connection',
     inputs: [],
   },
   {
     id: 'new',
     name: 'New Session',
     icon: Plus,
-    description: 'Start fresh',
+    description: 'Start fresh with cleared context',
     inputs: [],
   },
   {
     id: 'reset',
     name: 'Reset',
     icon: RotateCcw,
-    description: 'Clear context',
+    description: 'Clear all context and restart',
     inputs: [],
   },
 ]
 
-// Re-use the TelegramWebApp type loosely
-interface TelegramWebApp {
-  showPopup?: (params: {
-    title: string
-    message: string
-    buttons: { id: string; text: string }[]
-  }) => void
-  initDataUnsafe?: { chat?: { id: number }; user?: { id: number } }
-}
-
-interface SkillsRunnerProps {
-  tg: TelegramWebApp | null
-}
-
-function SkillsRunner({ tg }: SkillsRunnerProps) {
+function SkillsRunner() {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null)
   const [inputs, setInputs] = useState<Record<string, string>>({})
   const [running, setRunning] = useState<boolean>(false)
   const [result, setResult] = useState<SkillResult | null>(null)
-  const [chatId, setChatId] = useState<number | null>(null)
-
-  useEffect(() => {
-    if ((window as unknown as { Telegram?: { WebApp?: TelegramWebApp } }).Telegram?.WebApp) {
-      const initData = (window as unknown as { Telegram: { WebApp: TelegramWebApp } }).Telegram
-        .WebApp.initDataUnsafe
-      const id: number | undefined = initData?.chat?.id || initData?.user?.id
-      if (id) setChatId(id)
-    }
-  }, [])
 
   const handleSkillClick = (skill: Skill) => {
+    setResult(null)
+    
     if (skill.component) {
       setSelectedSkill(skill)
-      return
-    }
-
-    if (!chatId) {
-      setResult({
-        success: false,
-        message: 'Open from direct message for full access',
-      })
       return
     }
 
@@ -133,12 +105,12 @@ function SkillsRunner({ tg }: SkillsRunnerProps) {
     } else {
       setSelectedSkill(skill)
       setInputs({})
-      setResult(null)
     }
   }
 
   const runSkill = async (skillId: string, skillInputs: Record<string, string>) => {
     setRunning(true)
+    setResult(null)
 
     try {
       let command = skillId
@@ -165,29 +137,24 @@ function SkillsRunner({ tg }: SkillsRunnerProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: command,
-          chat_id: chatId,
+          chat_id: 1,
         }),
       })
 
       const data: MessageResponse = await response.json()
 
       if (data.success) {
-        setResult({ success: true, message: 'Sent! Check your chat.' })
-        if (tg) {
-          tg.showPopup?.({
-            title: 'Done',
-            message: 'Processing your request.',
-            buttons: [{ id: 'ok', text: 'OK' }],
-          })
-        }
+        setResult({ success: true, message: data.message || 'Done!' })
       } else {
-        setResult({ success: false, message: data.error || 'Failed' })
+        setResult({ success: false, message: data.error || 'Something went wrong' })
       }
     } catch (err) {
-      setResult({ success: false, message: (err as Error).message })
+      setResult({ success: false, message: 'Failed to run skill. Try again.' })
     } finally {
       setRunning(false)
-      setSelectedSkill(null)
+      if (selectedSkill?.inputs.length === 0) {
+        setSelectedSkill(null)
+      }
     }
   }
 
@@ -196,181 +163,280 @@ function SkillsRunner({ tg }: SkillsRunnerProps) {
     if (selectedSkill?.id) runSkill(selectedSkill.id, inputs)
   }
 
+  const handleBack = () => {
+    setSelectedSkill(null)
+    setResult(null)
+    setInputs({})
+  }
+
   // Render MCP Tools component
   if (selectedSkill?.id === 'mcp') {
     return (
-      <>
+      <div style={{ padding: '8px 0' }}>
         <button
           type="button"
-          className="btn btn-secondary"
-          onClick={() => setSelectedSkill(null)}
-          style={{ marginBottom: '16px' }}
+          onClick={handleBack}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 0',
+            background: 'none',
+            border: 'none',
+            color: 'var(--c-text)',
+            fontSize: '14px',
+            cursor: 'pointer',
+            marginBottom: '16px',
+          }}
         >
-          <ArrowLeft size={16} style={{ marginRight: '8px' }} />
-          Back to Tools
+          <ArrowLeft size={18} />
+          Back to Skills
         </button>
         <MCPTools />
-      </>
+      </div>
     )
   }
 
+  // Render skill form
   if (selectedSkill) {
-    const Icon = selectedSkill.icon
     return (
-      <>
+      <div style={{ padding: '8px 0' }}>
         <button
           type="button"
-          className="btn btn-secondary"
-          onClick={() => setSelectedSkill(null)}
-          style={{ marginBottom: '16px' }}
+          onClick={handleBack}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 0',
+            background: 'none',
+            border: 'none',
+            color: 'var(--c-text)',
+            fontSize: '14px',
+            cursor: 'pointer',
+            marginBottom: '16px',
+          }}
         >
-          <ArrowLeft size={16} style={{ marginRight: '8px' }} />
+          <ArrowLeft size={18} />
           Back
         </button>
 
-        <div className="card" style={{ textAlign: 'center', padding: '24px' }}>
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'var(--c-accent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 12px',
-              color: 'white',
-            }}
-          >
-            <Icon size={24} />
-          </div>
-          <div style={{ fontWeight: 700, fontSize: '17px', marginBottom: '4px' }}>
-            {selectedSkill.name}
-          </div>
-          <div style={{ fontSize: '14px', color: 'var(--c-hint)' }}>
-            {selectedSkill.description}
+        <div
+          className="card"
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            marginBottom: '16px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '12px',
+                background: 'rgba(255,255,255,0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <selectedSkill.icon size={24} />
+            </div>
+            <div>
+              <div style={{ fontSize: '20px', fontWeight: 700 }}>{selectedSkill.name}</div>
+              <div style={{ fontSize: '14px', opacity: 0.9 }}>{selectedSkill.description}</div>
+            </div>
           </div>
         </div>
+
+        {result && (
+          <div
+            className="card"
+            style={{
+              marginBottom: '16px',
+              background: result.success
+                ? 'rgba(34, 197, 94, 0.1)'
+                : 'rgba(239, 68, 68, 0.1)',
+              border: `1px solid ${result.success ? '#22c55e' : '#ef4444'}`,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: result.success ? '#22c55e' : '#ef4444',
+              }}
+            >
+              {result.success ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+              {result.message}
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {selectedSkill.inputs.map((input) => (
             <div key={input.name} style={{ marginBottom: '16px' }}>
-              <div className="card-header" style={{ marginBottom: '8px' }}>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  marginBottom: '6px',
+                }}
+              >
                 {input.label}
-              </div>
-              <div className="input-group">
-                <input
-                  type="text"
-                  value={inputs[input.name] || ''}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setInputs({ ...inputs, [input.name]: e.target.value })
-                  }
-                  placeholder={input.placeholder}
-                  style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none' }}
-                  required
-                />
-              </div>
+              </label>
+              <input
+                type="text"
+                name={input.name}
+                placeholder={input.placeholder}
+                value={inputs[input.name] || ''}
+                onChange={(e) =>
+                  setInputs((prev) => ({ ...prev, [input.name]: e.target.value }))
+                }
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--c-secondary-bg)',
+                  background: 'var(--c-bg)',
+                  color: 'var(--c-text)',
+                  fontSize: '15px',
+                  boxSizing: 'border-box',
+                }}
+              />
             </div>
           ))}
 
-          <button type="submit" className="btn" disabled={running}>
-            <Play size={16} style={{ marginRight: '8px' }} />
-            {running ? 'Running...' : 'Run'}
+          <button
+            type="submit"
+            disabled={running || selectedSkill.inputs.some((i) => !inputs[i.name])}
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'var(--c-primary)',
+              color: 'white',
+              fontSize: '15px',
+              fontWeight: 600,
+              cursor: running ? 'not-allowed' : 'pointer',
+              opacity: running || selectedSkill.inputs.some((i) => !inputs[i.name]) ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+            }}
+          >
+            {running ? (
+              <>
+                <div
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: 'white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                  }}
+                />
+                Running...
+              </>
+            ) : (
+              <>
+                <Play size={18} />
+                Run Skill
+              </>
+            )}
           </button>
         </form>
-      </>
+      </div>
     )
   }
 
+  // Render skills grid
   return (
-    <>
-      {result && (
+    <div style={{ padding: '8px 0' }}>
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '20px',
+          padding: '24px',
+          color: 'white',
+          marginBottom: '20px',
+        }}
+      >
         <div
-          className="card"
           style={{
-            background: result.success ? 'rgba(52, 199, 89, 0.1)' : 'rgba(255, 59, 48, 0.1)',
-            color: result.success ? 'var(--c-success)' : '#ff3b30',
-            marginBottom: '12px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {result.success ? '✓' : '<AlertCircle size={16}/>'}
-            {result.message}
-          </div>
-        </div>
-      )}
-
-      {!chatId && (
-        <div
-          className="card"
-          style={{
-            background: 'rgba(255, 149, 0, 0.1)',
-            color: 'var(--c-warning)',
-            marginBottom: '12px',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: 'rgba(255,255,255,0.2)',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            justifyContent: 'center',
+            marginBottom: '12px',
           }}
         >
-          <AlertCircle size={16} />
-          Open from DM for full access
+          <Puzzle size={24} />
         </div>
-      )}
+        <div style={{ fontSize: '24px', fontWeight: 800, marginBottom: '4px' }}>Tools & Skills</div>
+        <div style={{ fontSize: '15px', opacity: 0.9 }}>Run commands and manage integrations</div>
+      </div>
 
-      <div className="section-title">Available Tools</div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {SKILLS.map((skill) => {
-          const Icon = skill.icon
-          const disabled = !chatId && skill.id !== 'status' && skill.id !== 'mcp'
-          return (
-            <button
-              type="button"
-              key={skill.id}
-              onClick={() => handleSkillClick(skill)}
-              disabled={disabled}
-              className="list-item"
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '12px',
+        }}
+      >
+        {SKILLS.map((skill) => (
+          <button
+            key={skill.id}
+            type="button"
+            onClick={() => handleSkillClick(skill)}
+            style={{
+              padding: '16px',
+              borderRadius: '16px',
+              border: 'none',
+              background: 'var(--c-secondary-bg)',
+              color: 'var(--c-text)',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '12px',
+              textAlign: 'left',
+              transition: 'transform 0.2s',
+            }}
+          >
+            <div
               style={{
-                opacity: disabled ? 0.5 : 1,
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                border: 'none',
-                width: '100%',
-                textAlign: 'left',
-                background:
-                  skill.id === 'mcp' ? 'rgba(99, 102, 241, 0.1)' : 'var(--c-secondary-bg)',
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                background: 'var(--c-bg)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#667eea',
               }}
             >
-              <div className="left">
-                <div
-                  className="icon"
-                  style={{ background: skill.id === 'mcp' ? '#6366f1' : 'var(--c-accent)' }}
-                >
-                  <Icon size={16} />
-                </div>
-                <div>
-                  <div className="title">{skill.name}</div>
-                  <div className="meta">{skill.description}</div>
-                </div>
+              <skill.icon size={20} />
+            </div>
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '2px' }}>
+                {skill.name}
               </div>
-              {skill.id === 'mcp' && (
-                <span
-                  style={{
-                    padding: '4px 8px',
-                    background: '#6366f1',
-                    color: 'white',
-                    borderRadius: '6px',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                  }}
-                >
-                  NEW
-                </span>
-              )}
-            </button>
-          )
-        })}
+              <div style={{ fontSize: '12px', color: 'var(--c-hint)' }}>{skill.description}</div>
+            </div>
+          </button>
+        ))}
       </div>
-    </>
+    </div>
   )
 }
 

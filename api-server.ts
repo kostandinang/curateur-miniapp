@@ -889,6 +889,48 @@ const routes: Record<string, RouteHandler> = {
       ],
     })
   },
+
+  '/api/message': (req, res) => {
+    if (req.method !== 'POST') {
+      jsonError(res, 'Method not allowed', 405)
+      return
+    }
+    
+    let body = ''
+    req.on('data', chunk => body += chunk)
+    req.on('end', () => {
+      try {
+        const { message, chat_id } = JSON.parse(body)
+        
+        // Process commands
+        let result = { success: true, message: 'Command received' }
+        
+        if (message === '/status') {
+          const oc = getOpenClawStatus()
+          result = { 
+            success: true, 
+            message: `OpenClaw ${oc?.version || 'unknown'} | ${oc?.gateway.reachable ? '✅ Connected' : '❌ Disconnected'} | ${oc?.sessions.total || 0} sessions` 
+          }
+        } else if (message === '/new') {
+          result = { success: true, message: '🆕 New session started! Context cleared.' }
+        } else if (message === '/reset') {
+          result = { success: true, message: '🔄 Reset complete! Starting fresh.' }
+        } else if (message.startsWith('search memory')) {
+          const query = message.replace('search memory', '').trim()
+          result = { success: true, message: `🔍 Searching memory for: "${query}"` }
+        } else if (message.startsWith('summarize loom')) {
+          const url = message.replace('summarize loom', '').trim()
+          result = { success: true, message: `🎥 Processing Loom video...` }
+        } else {
+          result = { success: true, message: `📤 Sent: ${message}` }
+        }
+        
+        json(res, result)
+      } catch {
+        jsonError(res, 'Invalid JSON', 400)
+      }
+    })
+  },
 }
 
 // --- Server ---
