@@ -3,6 +3,7 @@ import {
   BookOpen,
   Briefcase,
   CheckCircle2,
+  Clock,
   DollarSign,
   Eye,
   EyeOff,
@@ -108,6 +109,14 @@ const ALL_WIDGETS: WidgetDefinition[] = [
     color: '#f97316',
     agent: 'project-updates',
     description: 'Daily standup notes',
+  },
+  {
+    id: 'cron',
+    label: 'Scheduler',
+    icon: Clock,
+    color: '#f59e0b',
+    agent: null,
+    description: 'Manage agent cron schedules',
   },
 ]
 
