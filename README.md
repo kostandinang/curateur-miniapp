@@ -1,121 +1,112 @@
-# 🦞 OpenClaw Telegram Mini App
+# Curateur
 
-A React-based Telegram Mini App for controlling your OpenClaw agent.
+Personal dashboard as a Telegram Mini App. Built with React, TypeScript, and Vite.
 
-## ✨ Features
+## Stack
 
-- **📊 Session Status** — Live model, token usage, context window, cost tracking
-- **🛠️ Skills Runner** — One-tap buttons for Loom, Weather, Memory search, and more
-- **🎨 Telegram Native UI** — Uses Telegram's theme colors, haptic feedback, native popups
+- **Frontend** — React 18, TypeScript, Vite, Lucide icons
+- **Backend** — Node.js HTTP server (TypeScript, runs via tsx)
+- **Linting** — Biome (format + lint + import sorting)
+- **Package manager** — pnpm
 
-## 🚀 Quick Start
-
-### 1. Install Dependencies
-
-```bash
-cd /root/.openclaw/workspace/miniapp
-npm install
-```
-
-### 2. Start Dev Server
+## Quick Start
 
 ```bash
-npm run dev
+pnpm install
+pnpm dev          # frontend on :3000
+pnpm server       # api on :3002
 ```
 
-The app will be at `http://localhost:3000`
+## Scripts
 
-### 3. Set Up Telegram Bot
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start Vite dev server |
+| `pnpm build` | Typecheck + production build |
+| `pnpm preview` | Preview production build |
+| `pnpm server` | Start API server |
+| `pnpm lint` | Run Biome checks |
+| `pnpm lint:fix` | Auto-fix lint issues |
+| `pnpm format` | Format all source files |
+| `pnpm typecheck` | Typecheck frontend |
+| `pnpm typecheck:server` | Typecheck API server |
 
-1. Message [@BotFather](https://t.me/BotFather)
-2. Send `/newapp` or go to Bot Settings → Menu Button
-3. Set menu button URL to your deployed app URL
-4. For local testing, use [ngrok](https://ngrok.com):
-   ```bash
-   ngrok http 3000
-   ```
-   Then use the ngrok HTTPS URL in BotFather.
+## Widgets
 
-### 4. Production Build
+| Widget | Description |
+|---|---|
+| ExchangeRate | USD/ALL currency tracker with alerts |
+| OMADTracker | Fasting streak tracker with daily history |
+| Wellbeing | Mood tracking with weekly charts |
+| ProjectUpdates | Daily standup notes per project |
+| SystemMonitor | Live CPU, memory, disk, network stats |
+| CostHeatmap | LLM usage analytics (30-day heatmap) |
+| JobSearch | Job listings with filters |
+| Flashcards | German language flashcards (A2/B1) |
+| VoiceNotes | Voice recording with playback |
+| VoiceToText | Voice message transcription viewer |
 
-```bash
-npm run build
-```
+Other features: command palette (Cmd+K), MCP tools manager, widget settings, skills runner.
 
-Deploy the `dist/` folder to any static host (Vercel, Netlify, GitHub Pages, etc.)
+## API Endpoints
 
-## 📝 BotFather Commands to Add
+All `GET` only. Served by `api-server.ts` on port 3002 (configurable via `PORT`).
 
-Send `/setcommands` to [@BotFather](https://t.me/BotFather):
+| Endpoint | Returns |
+|---|---|
+| `/api/status` | Health check + service list |
+| `/api/system` | CPU, memory, disk, network, uptime |
+| `/api/costs` | 30-day LLM cost breakdown |
+| `/api/jobs` | Job listings |
+| `/api/omad` | OMAD streak + history |
+| `/api/projects` | Project update entries |
+| `/api/wellbeing` | Mood entries + stats |
+| `/api/voice` | Voice note files |
+| `/api/voice-transcripts` | Transcripts (supports `?limit=N`) |
+| `/api/voice-stats` | Transcript counts |
 
-```
-menu - Open Control Panel
-status - Quick status check
-new - New session
-help - Show help
-```
-
-## 🔌 API Endpoints Used
-
-The app calls these OpenClaw Gateway endpoints:
-
-- `GET /api/status` — Session status
-- `POST /api/message` — Send commands to agent
-- `POST /api/sessions/new` — Create new session
-
-Make sure your Gateway is running and accessible!
-
-## 🎨 Customization
-
-Edit `src/components/SkillsRunner.jsx` to add more skills:
-
-```javascript
-const SKILLS = [
-  {
-    id: 'my-skill',
-    name: 'My Skill',
-    emoji: '🚀',
-    description: 'Does something cool',
-    inputs: [{name: 'param', label: 'Parameter', placeholder: 'Enter value...'}]
-  },
-  // ...
-]
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 miniapp/
 ├── src/
-│   ├── components/
-│   │   ├── SessionStatus.jsx   # Status tab
-│   │   └── SkillsRunner.jsx    # Skills tab
-│   ├── App.jsx                 # Main app + tabs
-│   ├── App.css                 # Telegram-themed styles
-│   └── main.jsx                # Entry point
-├── index.html                  # HTML template
-├── package.json
-├── vite.config.js
-└── README.md
+│   ├── components/       # 16 widget/feature components (.tsx)
+│   ├── App.tsx            # Main app shell + tabs + auth
+│   ├── App.css            # Telegram-themed styles (CSS vars)
+│   └── main.tsx           # Entry point
+├── api-server.ts          # Backend API server
+├── index.html
+├── biome.json             # Linter + formatter config
+├── tsconfig.json          # Frontend TS config
+├── tsconfig.server.json   # Backend TS config
+├── vite.config.ts
+├── vite-env.d.ts          # Global types (TelegramWebApp, Window)
+└── package.json
 ```
 
-## 🔒 Security Notes
+## Environment Variables
 
-- The auth token in SessionStatus.jsx should come from environment variables in production
-- Gateway should be behind HTTPS in production
-- Consider adding CORS restrictions to your Gateway
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3002` | API server port |
+| `WORKSPACE_DIR` | `/root/.openclaw/workspace` | Data directory for OMAD, projects, voice, etc. |
+| `CORS_ORIGIN` | `*` | Allowed CORS origin |
 
-## 🐛 Troubleshooting
+## Telegram Setup
 
-**"Gateway not reachable"**
-→ Make sure `openclaw gateway` is running
+1. Message [@BotFather](https://t.me/BotFather)
+2. Send `/newapp` or go to Bot Settings > Menu Button
+3. Set the URL to your deployed app
+4. For local testing: `ngrok http 3000`, use the HTTPS URL
 
-**Commands not sending**
-→ Check that the auth token matches your Gateway token
+## Auth
 
-**Theme not matching Telegram**
-→ The app reads from `window.Telegram.WebApp` — works only inside Telegram
+The app authenticates via Telegram WebApp context or a URL key parameter (`?key=...`). Browser sessions persist via `sessionStorage`.
 
----
+## Production
 
-Built with ❤️ for OpenClaw
+```bash
+pnpm build
+```
+
+Deploy `dist/` to any static host. Run `pnpm server` (or `tsx api-server.ts`) for the backend.
