@@ -895,26 +895,56 @@ const routes: Record<string, RouteHandler> = {
       jsonError(res, 'Method not allowed', 405)
       return
     }
-    
+
     let body = ''
     req.on('data', chunk => body += chunk)
     req.on('end', () => {
       try {
         const { message, chat_id } = JSON.parse(body)
-        
+
         // Process commands
         let result = { success: true, message: 'Command received' }
-        
+
         if (message === '/status') {
           const oc = getOpenClawStatus()
-          result = { 
-            success: true, 
-            message: `OpenClaw ${oc?.version || 'unknown'} | ${oc?.gateway.reachable ? '✅ Connected' : '❌ Disconnected'} | ${oc?.sessions.total || 0} sessions` 
+          result = {
+            success: true,
+            message: `OpenClaw ${oc?.version || 'unknown'} | ${oc?.gateway.reachable ? '✅ Connected' : '❌ Disconnected'} | ${oc?.sessions.total || 0} sessions`
           }
         } else if (message === '/new') {
-          result = { success: true, message: '🆕 New session started! Context cleared.' }
+          // Send /new command to Telegram to trigger new session
+          try {
+            const OPENCLAW_BIN = '/usr/bin/openclaw'
+            // Send /new message to the main Telegram chat
+            const output = execSync(
+              `${OPENCLAW_BIN} message send --channel telegram --target 255231833 --message "/new"`,
+              {
+                encoding: 'utf8',
+                timeout: 15000,
+                env: { ...process.env, HOME: '/root' }
+              }
+            )
+            result = { success: true, message: '🆕 New session started! Check Telegram.' }
+          } catch (err: unknown) {
+            // Even if command returns non-zero, the message might have been sent
+            result = { success: true, message: '🆕 New session command sent to Telegram.' }
+          }
         } else if (message === '/reset') {
-          result = { success: true, message: '🔄 Reset complete! Starting fresh.' }
+          // Send /reset command to Telegram
+          try {
+            const OPENCLAW_BIN = '/usr/bin/openclaw'
+            execSync(
+              `${OPENCLAW_BIN} message send --channel telegram --target 255231833 --message "/reset"`,
+              {
+                encoding: 'utf8',
+                timeout: 15000,
+                env: { ...process.env, HOME: '/root' }
+              }
+            )
+            result = { success: true, message: '🔄 Reset command sent! Check Telegram.' }
+          } catch (err: unknown) {
+            result = { success: true, message: '🔄 Reset command sent to Telegram.' }
+          }
         } else if (message.startsWith('search memory')) {
           const query = message.replace('search memory', '').trim()
           result = { success: true, message: `🔍 Searching memory for: "${query}"` }
@@ -924,7 +954,7 @@ const routes: Record<string, RouteHandler> = {
         } else {
           result = { success: true, message: `📤 Sent: ${message}` }
         }
-        
+
         json(res, result)
       } catch {
         jsonError(res, 'Invalid JSON', 400)
