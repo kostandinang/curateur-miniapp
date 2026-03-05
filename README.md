@@ -110,3 +110,87 @@ pnpm build
 ```
 
 Deploy `dist/` to any static host. Run `pnpm server` (or `tsx api-server.ts`) for the backend.
+
+## Keeping the API Server Running
+
+The miniapp widgets fetch real-time data from the API server (`api-server.ts`). If the server stops, widgets fall back to mock data.
+
+### Option 1: Systemd Service (Recommended)
+
+Create a systemd service for auto-start and auto-restart:
+
+```bash
+# Create service file
+sudo tee /etc/systemd/system/curateur-api.service > /dev/null << 'EOF'
+[Unit]
+Description=Curateur Miniapp API Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/.openclaw/workspace/miniapp
+ExecStart=/root/.openclaw/workspace/miniapp/node_modules/.bin/tsx api-server.ts
+Restart=always
+RestartSec=5
+KillMode=process
+Environment=HOME=/root
+Environment=NODE_ENV=production
+Environment=ELEVENLABS_API_KEY=your_api_key_here
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable curateur-api
+sudo systemctl start curateur-api
+
+# Check status
+systemctl status curateur-api
+```
+
+### Service Commands
+
+| Command | Description |
+|---------|-------------|
+| `systemctl start curateur-api` | Start the API server |
+| `systemctl stop curateur-api` | Stop the API server |
+| `systemctl restart curateur-api` | Restart the API server |
+| `systemctl status curateur-api` | Check server status |
+| `journalctl -u curateur-api -f` | View logs |
+
+### Option 2: PM2
+
+```bash
+npm install -g pm2
+pm2 start "pnpm exec tsx api-server.ts" --name curateur-api
+pm2 save
+pm2 startup
+```
+
+### Option 3: Screen/Tmux (Manual)
+
+```bash
+# Using screen
+screen -S curateur-api
+cd /root/.openclaw/workspace/miniapp && pnpm server
+# Detach: Ctrl+A, D
+
+# Reattach
+screen -r curateur-api
+```
+
+### Data Sources
+
+Real data is stored in these locations (backed up regularly):
+
+| Data | Location |
+|------|----------|
+| OMAD logs | `~/workspace/MEMORY.md` |
+| Wellbeing | `~/workspace/wellbeing/moods.json` |
+| Projects | `~/workspace/project-updates/updates.json` |
+| Voice notes | `~/workspace/voice-notes/` |
+| Transcripts | `~/workspace/voice-transcripts/` |
