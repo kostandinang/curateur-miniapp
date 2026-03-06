@@ -59,24 +59,21 @@
 
 ## Nice-to-Have
 
-### 9. Hardcoded values
-- **File:** `src/plugins/exchange-rate/widget.tsx:13`
-- **Problem:** Alert threshold `83` and API URL hardcoded in component.
-- **Fix:** Move to plugin manifest or environment config. Could add a `config` field to view manifests for widget-specific settings.
+### 9. Hardcoded values (DONE)
+- **File:** `src/plugins/exchange-rate/widget.tsx`
+- **Fix:** Extracted `EXCHANGE_API_URL`, `DEFAULT_THRESHOLD`, `REFRESH_INTERVAL_MS` as named constants.
 
-### 10. Loading and error states
-- **Problem:** Most widgets show nothing on API failure. No retry mechanism, no error boundaries.
-- **Fix:** Create a shared `<WidgetError>` component with retry button. Add React error boundary around lazy-loaded widgets in FacetSelector.
+### 10. Loading and error states (DONE)
+- **Files:** `src/shell/WidgetErrorBoundary.tsx`, `src/shell/FacetSelector.tsx`
+- **Fix:** Created `WidgetErrorBoundary` with retry button. Wraps all lazy-loaded widgets in FacetSelector.
 
-### 11. Inline CSS animations
-- **File:** `src/plugins/system-monitor/widget.tsx:193-198`
-- **Problem:** CSS `@keyframes` defined as inline styles in component, not reusable.
-- **Fix:** Move animation definitions to `App.css`. Already has a `.spinner` class — extend it.
+### 11. Inline CSS animations (DONE)
+- **Files:** `src/App.css`, `src/plugins/system-monitor/widget.tsx`
+- **Fix:** Moved `@keyframes pulse` from inline `<style>` tag to `App.css`. Removed the inline block.
 
-### 12. Telegram types
-- **File:** `src/App.tsx:30-41`
-- **Problem:** `TelegramWebApp` interface defined inline. Same type info repeated across `App.tsx`, `HookRunner.tsx`, `src/lib/api.ts`.
-- **Fix:** Extract to `src/types/telegram.ts`, import everywhere.
+### 12. Telegram types (DONE)
+- **Files:** `src/types/telegram.ts`, `src/App.tsx`, `src/lib/api.ts`, `src/shell/HookRunner.tsx`
+- **Fix:** Extracted `TelegramWebApp` and `TelegramWindow` to shared types file. Removed inline definitions from 3 files.
 
 ---
 
@@ -88,4 +85,4 @@
 | Phase 2 (done) | #2 Input validation, #3 MCP persistence | ~1 hr |
 | Phase 3 (done) | #4 Vitest setup + 30 tests | ~1 hr |
 | Phase 4 (done) | #5-8 Code quality fixes | ~2 hr |
-| Phase 5 | #9-12 Polish | ~2 hr |
+| Phase 5 (done) | #9-12 Polish | ~2 hr |

@@ -2,19 +2,14 @@
  * Authenticated fetch wrapper for all API calls.
  * Attaches Telegram initData or Bearer token as auth header.
  */
-
-interface TelegramWebApp {
-  initData?: string
-}
+import type { TelegramWindow } from '../types/telegram'
 
 function getAuthHeaders(): Record<string, string> {
-  // Prefer Telegram initData if available
-  const tg = (window as { Telegram?: { WebApp?: TelegramWebApp } }).Telegram?.WebApp
+  const tg = (window as unknown as TelegramWindow).Telegram?.WebApp
   if (tg?.initData) {
     return { 'X-Telegram-Init-Data': tg.initData }
   }
 
-  // Fall back to secret key from env (for browser access)
   const secretKey = import.meta.env.VITE_SECRET_KEY as string | undefined
   if (secretKey) {
     return { Authorization: `Bearer ${secretKey}` }

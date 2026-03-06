@@ -5,6 +5,7 @@ import { useNamingPack } from './hooks/useNamingPack'
 import CommandPalette from './shell/CommandPalette'
 import FacetSelector from './shell/FacetSelector'
 import HookRunner from './shell/HookRunner'
+import type { TelegramWebApp, TelegramWindow } from './types/telegram'
 import './App.css'
 
 const SessionStatus = lazy(() => import('./plugins/session-status/widget'))
@@ -25,19 +26,6 @@ type TabType = 'widgets' | 'status' | 'tools'
 interface CommandAction {
   name: string
   action: string
-}
-
-interface TelegramWebApp {
-  ready: () => void
-  expand: () => void
-  setHeaderColor?: (color: string) => void
-  colorScheme?: 'dark' | 'light'
-  showPopup?: (params: {
-    title: string
-    message: string
-    buttons: { id: string; text: string }[]
-  }) => void
-  initDataUnsafe?: { chat?: { id: number }; user?: { id: number } }
 }
 
 interface CurateurLogoProps {
@@ -90,8 +78,7 @@ function App() {
   useEffect(() => {
     setIsLoading(true)
 
-    const webapp = (window as unknown as { Telegram?: { WebApp?: TelegramWebApp } }).Telegram
-      ?.WebApp
+    const webapp = (window as unknown as TelegramWindow).Telegram?.WebApp
     if (webapp) {
       webapp.ready()
       webapp.expand()

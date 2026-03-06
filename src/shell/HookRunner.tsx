@@ -2,6 +2,7 @@ import * as LucideIcons from 'lucide-react'
 import { useState } from 'react'
 import { apiFetch } from '../lib/api'
 import { useNamingPack } from '../hooks/useNamingPack'
+import type { TelegramWindow } from '../types/telegram'
 import { actions, connectors } from '../plugins/registry'
 import type { ActionPlugin, SkillInput } from '../plugins/schema'
 import TapManager from './TapManager'
@@ -56,7 +57,7 @@ function HookRunner() {
       }
 
       // Get Telegram user ID from WebApp context if available
-      const tg = (window as unknown as { Telegram?: { WebApp?: { initDataUnsafe?: { user?: { id: number }; chat?: { id: number } } } } }).Telegram?.WebApp
+      const tg = (window as unknown as TelegramWindow).Telegram?.WebApp
       const chatId = tg?.initDataUnsafe?.user?.id || tg?.initDataUnsafe?.chat?.id
 
       const response = await apiFetch('/api/message', {

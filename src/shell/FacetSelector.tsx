@@ -5,6 +5,7 @@ import { useSettings } from '../hooks/useSettings'
 import { views } from '../plugins/registry'
 import type { ViewPlugin } from '../plugins/schema'
 import Settings from './Settings'
+import WidgetErrorBoundary from './WidgetErrorBoundary'
 
 function getIcon(iconName: string) {
   return (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Box
@@ -170,15 +171,17 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
 
       {/* Active Widget */}
       {ActiveComponent && (
-        <Suspense
-          fallback={
-            <div className="empty">
-              <div className="spinner">Loading...</div>
-            </div>
-          }
-        >
-          <ActiveComponent />
-        </Suspense>
+        <WidgetErrorBoundary widgetName={activeView?.name}>
+          <Suspense
+            fallback={
+              <div className="empty">
+                <div className="spinner">Loading...</div>
+              </div>
+            }
+          >
+            <ActiveComponent />
+          </Suspense>
+        </WidgetErrorBoundary>
       )}
     </>
   )

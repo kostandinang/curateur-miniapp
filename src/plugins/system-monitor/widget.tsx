@@ -162,13 +162,6 @@ function SystemMonitor() {
           }}
         />
 
-        <style>{`
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-          }
-        `}</style>
-
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div
             style={{

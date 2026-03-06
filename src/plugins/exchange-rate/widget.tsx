@@ -1,6 +1,10 @@
 import { ArrowUpRight, Bell, RefreshCw, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+const EXCHANGE_API_URL = 'https://open.er-api.com/v6/latest/USD'
+const DEFAULT_THRESHOLD = 83
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000
+
 interface ExchangeRateApiResponse {
   rates: Record<string, number>
   time_last_update_utc: string
@@ -10,13 +14,13 @@ function ExchangeRate() {
   const [rate, setRate] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  const [threshold, setThreshold] = useState<number>(83)
+  const [threshold, setThreshold] = useState<number>(DEFAULT_THRESHOLD)
   const [lastUpdate, setLastUpdate] = useState<string | null>(null)
 
   const fetchRate = async (): Promise<void> => {
     setLoading(true)
     try {
-      const res = await fetch('https://open.er-api.com/v6/latest/USD')
+      const res = await fetch(EXCHANGE_API_URL)
       const data: ExchangeRateApiResponse = await res.json()
       setRate(data.rates.ALL)
       setLastUpdate(data.time_last_update_utc)
@@ -30,7 +34,7 @@ function ExchangeRate() {
 
   useEffect(() => {
     fetchRate()
-    const interval = setInterval(fetchRate, 5 * 60 * 1000)
+    const interval = setInterval(fetchRate, REFRESH_INTERVAL_MS)
     return () => clearInterval(interval)
   }, [])
 
