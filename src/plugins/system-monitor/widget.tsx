@@ -1,5 +1,6 @@
 import { Activity, Clock, Cpu, HardDrive, Layers, RefreshCw, Server, Wifi, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface CpuStats {
   usage: number
@@ -62,7 +63,7 @@ function SystemMonitor() {
   const fetchStats = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await fetch('/api/system')
+      const res = await apiFetch('/api/system')
       if (!res.ok) throw new Error('Failed')
       const data: SystemStats = await res.json()
       setStats(data)
@@ -94,7 +95,7 @@ function SystemMonitor() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/system')
+        const res = await apiFetch('/api/system')
         if (!res.ok) throw new Error('Failed')
         const data: SystemStats = await res.json()
         setStats(data)

@@ -1,5 +1,6 @@
 import { Activity, Command, LayoutGrid, Zap } from 'lucide-react'
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { apiFetch } from './lib/api'
 import { useNamingPack } from './hooks/useNamingPack'
 import CommandPalette from './shell/CommandPalette'
 import FacetSelector from './shell/FacetSelector'
@@ -165,7 +166,7 @@ function App() {
           break
         case 'agent':
           // Send message to trigger agent - uses Telegram WebApp user ID
-          fetch('/api/message', {
+          apiFetch('/api/message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

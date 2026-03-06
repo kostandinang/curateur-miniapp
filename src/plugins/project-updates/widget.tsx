@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp, FolderKanban, Play, Video } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface LoomData {
   title: string
@@ -33,7 +34,7 @@ function ProjectUpdates() {
   const _fetchData = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await fetch('/api/projects')
+      const res = await apiFetch('/api/projects')
       if (!res.ok) throw new Error('Failed to fetch')
       const data: ProjectsApiResponse = await res.json()
       setProjects(data.projects || [])
@@ -53,7 +54,7 @@ function ProjectUpdates() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/projects')
+        const res = await apiFetch('/api/projects')
         if (!res.ok) throw new Error('Failed to fetch')
         const data: ProjectsApiResponse = await res.json()
         setProjects(data.projects || [])

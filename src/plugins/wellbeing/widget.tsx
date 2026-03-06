@@ -1,5 +1,6 @@
 import { Calendar, Heart, Moon, RefreshCw, Sparkles, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface MoodOption {
   value: number
@@ -79,7 +80,7 @@ function Wellbeing() {
   const fetchData = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await fetch('/api/wellbeing')
+      const res = await apiFetch('/api/wellbeing')
       if (!res.ok) throw new Error('Failed to fetch')
       const data: WellbeingApiResponse = await res.json()
 
@@ -130,7 +131,7 @@ function Wellbeing() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/wellbeing')
+        const res = await apiFetch('/api/wellbeing')
         if (!res.ok) throw new Error('Failed to fetch')
         const data: WellbeingApiResponse = await res.json()
 

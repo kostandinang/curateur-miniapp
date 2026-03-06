@@ -1,5 +1,6 @@
 import { Activity, Brain, Cpu, Layers, RefreshCw, Server, Shield, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface OpenClawSession {
   id: string
@@ -63,7 +64,7 @@ function SessionStatus() {
   const fetchStatus = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/status')
+      const response = await apiFetch('/api/status')
       if (!response.ok) throw new Error('Failed')
       const data: StatusResponse = await response.json()
       setStatus(data)

@@ -1,5 +1,6 @@
 import { type ChangeEvent, useEffect, useState } from 'react'
 import { Clock, Calendar, Check, AlertCircle, RotateCcw, Save, Sun, Moon, Briefcase, TrendingUp, BookOpen, Flame, DollarSign, FolderKanban } from 'lucide-react'
+import { apiFetch } from '../../lib/api'
 import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
 interface AgentConfig {
@@ -145,7 +146,7 @@ function CronManager() {
     try {
       setLoading(true)
       // Add cache-busting query param
-      const res = await fetch(`/api/crons?_=${Date.now()}`)
+      const res = await apiFetch(`/api/crons?_=${Date.now()}`)
       if (!res.ok) throw new Error('Failed to fetch')
       const data: ScheduleResponse = await res.json()
 
@@ -188,7 +189,7 @@ function CronManager() {
     try {
       setSaving(true)
       setError(null)
-      const res = await fetch('/api/crons', {
+      const res = await apiFetch('/api/crons', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(schedules)

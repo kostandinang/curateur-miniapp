@@ -1,5 +1,6 @@
 import * as LucideIcons from 'lucide-react'
 import { useState } from 'react'
+import { apiFetch } from '../lib/api'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { actions, connectors } from '../plugins/registry'
 import type { ActionPlugin, SkillInput } from '../plugins/schema'
@@ -58,7 +59,7 @@ function HookRunner() {
       const tg = (window as unknown as { Telegram?: { WebApp?: { initDataUnsafe?: { user?: { id: number }; chat?: { id: number } } } } }).Telegram?.WebApp
       const chatId = tg?.initDataUnsafe?.user?.id || tg?.initDataUnsafe?.chat?.id
 
-      const response = await fetch('/api/message', {
+      const response = await apiFetch('/api/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

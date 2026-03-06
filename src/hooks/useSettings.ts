@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { apiFetch } from '../lib/api'
 import { views } from '../plugins/registry'
 
 const STORAGE_KEY = 'curateur-widgets-enabled'
@@ -9,7 +10,7 @@ export function useSettings() {
 
   useEffect(() => {
     // Try server config first
-    fetch('/api/config')
+    apiFetch('/api/config')
       .then(r => r.json())
       .then(config => {
         if (config.plugins?.views?.length) {

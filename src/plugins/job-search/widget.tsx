@@ -1,5 +1,6 @@
 import { Briefcase, Building2, Clock, DollarSign, MapPin, RefreshCw, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface Job {
   id: string
@@ -45,7 +46,7 @@ function JobSearch() {
       setLoading(true)
 
       // Try to fetch from hiring.cafe API
-      const res = await fetch('/api/jobs')
+      const res = await apiFetch('/api/jobs')
       if (!res.ok) throw new Error('API not available')
       const data: JobsApiResponse = await res.json()
 
@@ -102,7 +103,7 @@ function JobSearch() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/jobs')
+        const res = await apiFetch('/api/jobs')
         if (!res.ok) throw new Error('API not available')
         const data: JobsApiResponse = await res.json()
 

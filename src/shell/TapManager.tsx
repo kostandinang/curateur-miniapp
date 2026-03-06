@@ -1,5 +1,6 @@
 import * as LucideIcons from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../lib/api'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { connectors } from '../plugins/registry'
 import type { ConnectorPlugin } from '../plugins/schema'
@@ -29,7 +30,7 @@ function TapManager() {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await fetch('/api/mcp')
+        const response = await apiFetch('/api/mcp')
         const data: MCPStatusResponse = await response.json()
         if (data.servers) {
           const enabledServers = Object.entries(data.servers)
@@ -52,7 +53,7 @@ function TapManager() {
     setLoading(connector.id)
 
     try {
-      await fetch(`/api/mcp/${serverName}/config`, {
+      await apiFetch(`/api/mcp/${serverName}/config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: !isCurrentlyEnabled }),

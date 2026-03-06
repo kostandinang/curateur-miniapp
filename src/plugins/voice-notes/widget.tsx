@@ -1,5 +1,6 @@
 import { FileAudio, Mic, Pause, Play, RefreshCw, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface VoiceNote {
   id: number
@@ -25,7 +26,7 @@ function VoiceNotes() {
   const fetchNotes = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await fetch('/api/voice')
+      const res = await apiFetch('/api/voice')
       if (!res.ok) throw new Error('Failed')
       const data: VoiceNotesApiResponse = await res.json()
 
@@ -64,7 +65,7 @@ function VoiceNotes() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/voice')
+        const res = await apiFetch('/api/voice')
         if (!res.ok) throw new Error('Failed')
         const data: VoiceNotesApiResponse = await res.json()
 

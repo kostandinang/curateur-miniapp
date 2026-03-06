@@ -1,5 +1,6 @@
 import { Calendar, CheckCircle2, Clock, Flame, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
 interface HistoryEntry {
@@ -29,7 +30,7 @@ function OMADTracker() {
   const fetchData = async (): Promise<void> => {
     try {
       setLoading(true)
-      const res = await fetch('/api/omad')
+      const res = await apiFetch('/api/omad')
       if (!res.ok) throw new Error('Failed to fetch')
       const omadData: OMADData = await res.json()
       setData(omadData)
@@ -70,7 +71,7 @@ function OMADTracker() {
     const doFetch = async (): Promise<void> => {
       try {
         setLoading(true)
-        const res = await fetch('/api/omad')
+        const res = await apiFetch('/api/omad')
         if (!res.ok) throw new Error('Failed to fetch')
         const omadData: OMADData = await res.json()
         setData(omadData)

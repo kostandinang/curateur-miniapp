@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../lib/api'
 import { getNamingPack, type NamingPack } from '../plugins/naming-packs'
 
 const STORAGE_KEY = 'curateur-naming-pack'
@@ -8,7 +9,7 @@ export function useNamingPack(): { pack: NamingPack; setPack: (id: number) => vo
 
   useEffect(() => {
     // Try server config first
-    fetch('/api/config')
+    apiFetch('/api/config')
       .then(r => r.json())
       .then(config => {
         if (config.namingPack !== undefined) {
@@ -28,10 +29,10 @@ export function useNamingPack(): { pack: NamingPack; setPack: (id: number) => vo
     setPackState(getNamingPack(id))
     localStorage.setItem(STORAGE_KEY, String(id))
     // Also persist to server
-    fetch('/api/config')
+    apiFetch('/api/config')
       .then(r => r.json())
       .then(config => {
-        fetch('/api/config', {
+        apiFetch('/api/config', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...config, namingPack: id }),

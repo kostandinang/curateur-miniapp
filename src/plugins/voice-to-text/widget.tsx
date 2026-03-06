@@ -1,5 +1,6 @@
 import { Clock, FileText, MessageSquare, Mic, Pause, Play, RefreshCw, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface Transcript {
   id: string
@@ -24,8 +25,8 @@ function VoiceToText() {
     try {
       setLoading(true)
       const [transcriptsRes, statsRes] = await Promise.all([
-        fetch('/api/voice-transcripts'),
-        fetch('/api/voice-stats'),
+        apiFetch('/api/voice-transcripts'),
+        apiFetch('/api/voice-stats'),
       ])
 
       if (transcriptsRes.ok) {
@@ -68,8 +69,8 @@ function VoiceToText() {
       try {
         setLoading(true)
         const [transcriptsRes, statsRes] = await Promise.all([
-          fetch('/api/voice-transcripts'),
-          fetch('/api/voice-stats'),
+          apiFetch('/api/voice-transcripts'),
+          apiFetch('/api/voice-stats'),
         ])
 
         if (transcriptsRes.ok) {

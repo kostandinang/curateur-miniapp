@@ -1,5 +1,6 @@
 import { Activity, AlertCircle, Calendar, DollarSign, RefreshCw, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
 interface UsageDay {
   date: string
@@ -34,7 +35,7 @@ function CostHeatmap() {
 
     try {
       // Try to fetch from API first
-      const res = await fetch('/api/costs')
+      const res = await apiFetch('/api/costs')
       if (!res.ok) throw new Error('API not available')
       const data: CostApiResponse = await res.json()
 
@@ -138,7 +139,7 @@ function CostHeatmap() {
       setError(null)
 
       try {
-        const res = await fetch('/api/costs')
+        const res = await apiFetch('/api/costs')
         if (!res.ok) throw new Error('API not available')
         const data: CostApiResponse = await res.json()
 
