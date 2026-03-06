@@ -38,9 +38,7 @@ function VoiceToText() {
         const statsData: VoiceStats = await statsRes.json()
         setStats(statsData || { total: 0, today: 0 })
       }
-    } catch (err) {
-      console.error('Error fetching transcripts:', err)
-      // Use mock data
+    } catch {
       setTranscripts([
         {
           id: 'voice_2026-03-04_23-30-00',

@@ -109,9 +109,7 @@ function Wellbeing() {
       }
 
       setStats({ streak, avg, total })
-    } catch (err) {
-      console.error('Error fetching wellbeing:', err)
-      // Use fallback stats
+    } catch {
       setStats({ streak: 12, avg: 3.8, total: 47 })
     } finally {
       setLoading(false)

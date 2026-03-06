@@ -46,8 +46,6 @@ function CostHeatmap() {
         throw new Error('No data')
       }
     } catch (_err) {
-      // Fallback: Try to get from session status or generate from mock
-      console.log('Using fallback cost data')
       generateMockData()
     } finally {
       setLoading(false)

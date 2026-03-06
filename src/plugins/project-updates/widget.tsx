@@ -41,9 +41,7 @@ function ProjectUpdates() {
       if (data.projects?.length > 0) {
         setExpandedProject(data.projects[0].id)
       }
-    } catch (err) {
-      console.error('Error fetching projects:', err)
-      // Fallback mock data
+    } catch {
       setProjects([])
     } finally {
       setLoading(false)

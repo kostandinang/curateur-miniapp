@@ -78,8 +78,7 @@ function SystemMonitor() {
       const data: SystemStats = await res.json()
       setStats(data)
       setLastUpdate(new Date())
-    } catch (err) {
-      console.error('Error fetching system stats:', err)
+    } catch {
       setStats({
         timestamp: new Date().toISOString(),
         cpu: { usage: 23.5 },
