@@ -183,16 +183,10 @@ function SessionStatus() {
           borderRadius: '12px',
           marginBottom: '16px'
         }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white'
-          }}>
+          <div
+            className="icon-box"
+            style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white' }}
+          >
             <Cpu size={20} />
           </div>
           <div style={{ flex: 1 }}>
@@ -219,19 +213,14 @@ function SessionStatus() {
               {formatTokens(totalTokensUsed)} / {formatTokens(totalTokensAvailable)}
             </span>
           </div>
-          <div style={{
-            height: '8px',
-            background: 'var(--c-secondary-bg)',
-            borderRadius: '4px',
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              height: '100%',
-              width: `${Math.min((totalTokensUsed / totalTokensAvailable) * 100, 100)}%`,
-              background: 'linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%)',
-              borderRadius: '4px',
-              transition: 'width 0.3s'
-            }} />
+          <div className="progress-track">
+            <div
+              className="progress-fill"
+              style={{
+                width: `${Math.min((totalTokensUsed / totalTokensAvailable) * 100, 100)}%`,
+                background: 'linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%)',
+              }}
+            />
           </div>
         </div>
 
@@ -269,42 +258,33 @@ function SessionStatus() {
       </div>
 
       {/* Stats Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '10px',
-        marginBottom: '16px'
-      }}>
-        <div className="card" style={{ marginBottom: 0, padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <Zap size={16} style={{ color: '#f59e0b' }} />
-            <span style={{ fontSize: '12px', color: 'var(--c-hint)' }}>Node.js</span>
+      <div className="info-grid" style={{ marginBottom: '16px' }}>
+        <div className="info-item">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <Zap size={14} style={{ color: '#f59e0b' }} />
+            <span className="label">Node.js</span>
           </div>
-          <div style={{ fontSize: '18px', fontWeight: 700 }}>{oc.runtime.nodeVersion}</div>
+          <div className="value">{oc.runtime.nodeVersion}</div>
         </div>
-
-        <div className="card" style={{ marginBottom: 0, padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <Server size={16} style={{ color: '#0ea5e9' }} />
-            <span style={{ fontSize: '12px', color: 'var(--c-hint)' }}>OS</span>
+        <div className="info-item">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <Server size={14} style={{ color: '#0ea5e9' }} />
+            <span className="label">OS</span>
           </div>
-          <div style={{ fontSize: '18px', fontWeight: 700 }}>{oc.runtime.os.split(' ')[0]}</div>
+          <div className="value">{oc.runtime.os.split(' ')[0]}</div>
         </div>
       </div>
 
       {/* Security */}
       <div className="card" style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: isSecure ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: isSecure ? '#22c55e' : '#ef4444'
-          }}>
+          <div
+            className="icon-box"
+            style={{
+              background: isSecure ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+              color: isSecure ? '#22c55e' : '#ef4444',
+            }}
+          >
             <Shield size={20} />
           </div>
           <div style={{ flex: 1 }}>
@@ -323,16 +303,13 @@ function SessionStatus() {
       {/* Telegram Channel */}
       <div className="card" style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: oc.channels.telegram.enabled ? 'rgba(34, 197, 94, 0.1)' : 'rgba(156, 163, 175, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: oc.channels.telegram.enabled ? '#22c55e' : '#9ca3af'
-          }}>
+          <div
+            className="icon-box"
+            style={{
+              background: oc.channels.telegram.enabled ? 'rgba(34, 197, 94, 0.1)' : 'rgba(156, 163, 175, 0.1)',
+              color: oc.channels.telegram.enabled ? '#22c55e' : '#9ca3af',
+            }}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
             </svg>
