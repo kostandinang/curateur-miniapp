@@ -111,15 +111,12 @@ function OMADTracker() {
     <>
       {/* Streak Card */}
       <div
+        className="hero-banner"
         style={{
           background: wasBroken
             ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
             : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
           textAlign: 'center',
-          marginBottom: '16px',
         }}
       >
         <div
