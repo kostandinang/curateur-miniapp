@@ -2,6 +2,7 @@ import * as LucideIcons from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
 import { useNamingPack } from '../hooks/useNamingPack'
+import Loader from './Loader'
 import { connectors } from '../plugins/registry'
 import type { ConnectorPlugin } from '../plugins/schema'
 
@@ -85,7 +86,7 @@ function TapManager() {
   if (initialLoading) {
     return (
       <div className="empty">
-        <LucideIcons.RefreshCw size={24} className="spinner" />
+        <Loader />
       </div>
     )
   }
@@ -283,7 +284,7 @@ function TapManager() {
                   >
                     {isLoading ? (
                       <>
-                        <LucideIcons.RefreshCw size={14} className="spinner" /> ...
+                        <Loader variant="arc" size="sm" /> ...
                       </>
                     ) : isEnabled ? (
                       <>

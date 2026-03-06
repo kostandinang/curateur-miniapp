@@ -1,6 +1,7 @@
 import { Calendar, Heart, Moon, RefreshCw, Sparkles, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
+import Loader from '../../shell/Loader'
 
 interface MoodOption {
   value: number
@@ -162,7 +163,7 @@ function Wellbeing() {
   if (loading) {
     return (
       <div className="empty">
-        <Heart size={24} className="spinner" />
+        <Loader />
       </div>
     )
   }
@@ -325,10 +326,7 @@ function Wellbeing() {
       </div>
 
       <button type="button" onClick={fetchData} disabled={loading} className="btn btn-secondary">
-        <RefreshCw
-          size={16}
-          style={{ marginRight: '8px', animation: loading ? 'spin 1s linear infinite' : 'none' }}
-        />
+        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={16} />}
         Refresh
       </button>
     </>

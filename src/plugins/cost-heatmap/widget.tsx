@@ -1,6 +1,7 @@
 import { Activity, AlertCircle, Calendar, DollarSign, RefreshCw, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
+import Loader from '../../shell/Loader'
 
 interface UsageDay {
   date: string
@@ -117,7 +118,7 @@ function CostHeatmap() {
   if (loading) {
     return (
       <div className="empty">
-        <Activity size={24} className="spinner" />
+        <Loader />
       </div>
     )
   }
@@ -362,13 +363,7 @@ function CostHeatmap() {
         className="btn"
         style={{ marginTop: '16px' }}
       >
-        <RefreshCw
-          size={18}
-          style={{
-            marginRight: '8px',
-            animation: loading ? 'spin 1s linear infinite' : 'none',
-          }}
-        />
+        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={18} />}
         {loading ? 'Updating...' : 'Refresh Data'}
       </button>
     </>

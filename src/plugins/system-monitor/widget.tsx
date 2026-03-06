@@ -1,6 +1,7 @@
 import { Activity, Clock, Cpu, HardDrive, Layers, RefreshCw, Server, Wifi, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
+import Loader from '../../shell/Loader'
 
 interface CpuStats {
   usage: number
@@ -112,7 +113,7 @@ function SystemMonitor() {
   if (loading || !stats) {
     return (
       <div className="empty">
-        <Activity size={24} className="spinner" />
+        <Loader />
       </div>
     )
   }
@@ -598,10 +599,7 @@ function SystemMonitor() {
             opacity: loading ? 0.7 : 1,
           }}
         >
-          <RefreshCw
-            size={14}
-            style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }}
-          />
+          {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={14} />}
           Refresh
         </button>
       </div>

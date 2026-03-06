@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { apiFetch } from '../lib/api'
 import { useNamingPack } from '../hooks/useNamingPack'
 import type { TelegramWindow } from '../types/telegram'
+import Loader from './Loader'
 import { actions, connectors } from '../plugins/registry'
 import type { ActionPlugin, SkillInput } from '../plugins/schema'
 import TapManager from './TapManager'
@@ -265,16 +266,7 @@ function HookRunner() {
           >
             {running ? (
               <>
-                <div
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    borderTopColor: 'white',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite',
-                  }}
-                />
+                <Loader variant="arc" size="sm" white />
                 Running...
               </>
             ) : (

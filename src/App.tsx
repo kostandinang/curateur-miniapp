@@ -6,6 +6,7 @@ import CommandPalette from './shell/CommandPalette'
 import FacetSelector from './shell/FacetSelector'
 import HookRunner from './shell/HookRunner'
 import type { TelegramWebApp, TelegramWindow } from './types/telegram'
+import Loader from './shell/Loader'
 import './App.css'
 
 const SessionStatus = lazy(() => import('./plugins/session-status/widget'))
@@ -206,7 +207,7 @@ function App() {
         }}
       >
         <CurateurLogo size={48} />
-        <div style={{ color: '#666', fontSize: '14px' }}>Loading...</div>
+        <Loader size="lg" />
       </div>
     )
   }
@@ -347,7 +348,7 @@ function App() {
             <FacetSelector activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
           {activeTab === 'status' && (
-            <Suspense fallback={<div className="empty"><div className="spinner">Loading...</div></div>}>
+            <Suspense fallback={<div className="empty"><Loader label="Loading..." /></div>}>
               <SessionStatus />
             </Suspense>
           )}

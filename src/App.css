@@ -286,8 +286,70 @@
   50% { transform: scale(1.1); opacity: 0.8; }
 }
 
+@keyframes loader-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes loader-fade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
 .spinner {
   animation: spin 1s linear infinite;
+}
+
+/* Themed dot loader */
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.loader-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  animation: loader-fade 1.2s ease-in-out infinite;
+}
+
+.loader-dot:nth-child(2) { animation-delay: 0.15s; }
+.loader-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* Larger loader variant for full-page/widget states */
+.loader-lg .loader-dot {
+  width: 10px;
+  height: 10px;
+}
+
+/* Arc loader for inline/button use */
+.loader-arc {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--c-secondary-bg);
+  border-top-color: var(--c-accent);
+  border-radius: 50%;
+  animation: loader-sweep 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  flex-shrink: 0;
+}
+
+.loader-arc-sm {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+/* White variant for use on colored backgrounds */
+.loader-arc-white {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-top-color: white;
+}
+
+.loader-dot-white {
+  background: white;
 }
 
 /* List Items */
