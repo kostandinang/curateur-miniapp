@@ -1,10 +1,76 @@
 import { CheckCircle2, Circle, Puzzle, RefreshCw, Settings } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
 import { getIcon } from '../lib/icons'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { connectors } from '../plugins/registry'
 import type { ConnectorPlugin } from '../plugins/schema'
+
+interface ConnectorCardProps {
+  connector: ConnectorPlugin
+  isEnabled: boolean
+  isLoading: boolean
+  accent: string
+  onToggle: (c: ConnectorPlugin) => void
+}
+
+const ConnectorCard = memo(function ConnectorCard({ connector, isEnabled, isLoading, accent, onToggle }: ConnectorCardProps) {
+  const Icon = getIcon(connector.icon)
+  return (
+    <div
+      className="card"
+      style={{ marginBottom: 0, padding: '14px', borderLeft: isEnabled ? `3px solid ${accent}` : 'none' }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+        <div
+          className="icon-box"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: isEnabled ? `${connector.color}20` : 'var(--c-secondary-bg)',
+            color: isEnabled ? connector.color : 'var(--c-hint)',
+          }}
+        >
+          <Icon size={20} />
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--c-text)' }}>
+              {connector.name}
+            </span>
+          </div>
+          <div style={{ fontSize: '13px', color: 'var(--c-hint)', lineHeight: '1.4' }}>
+            {connector.description}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onToggle(connector)}
+          disabled={isLoading}
+          aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${connector.name}`}
+          className="toggle-btn"
+          style={{
+            background: isEnabled ? '#22c55e' : 'var(--c-secondary-bg)',
+            color: isEnabled ? 'white' : 'var(--c-hint)',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            opacity: isLoading ? 0.7 : 1,
+          }}
+        >
+          {isLoading ? (
+            <><RefreshCw size={14} className="spinner" /> ...</>
+          ) : isEnabled ? (
+            <><CheckCircle2 size={14} /> On</>
+          ) : (
+            <><Circle size={14} /> Off</>
+          )}
+        </button>
+      </div>
+    </div>
+  )
+})
 
 interface MCPServerStatus {
   name: string
@@ -43,7 +109,7 @@ function ConnectorManager() {
     fetchStatus()
   }, [])
 
-  const handleToggle = async (connector: ConnectorPlugin) => {
+  const handleToggle = useCallback(async (connector: ConnectorPlugin) => {
     const serverName = connector.mcp.serverName
     const isCurrentlyEnabled = enabled.includes(serverName)
     setLoading(connector.id)
@@ -65,7 +131,7 @@ function ConnectorManager() {
     } finally {
       setLoading(null)
     }
-  }
+  }, [enabled])
 
   const filteredConnectors = connectors.filter(c => {
     if (filter === 'all') return true
@@ -143,71 +209,16 @@ function ConnectorManager() {
 
       {/* Connector List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {filteredConnectors.map((connector) => {
-          const Icon = getIcon(connector.icon)
-          const isEnabled = enabled.includes(connector.mcp.serverName)
-          const isLoading = loading === connector.id
-
-          return (
-            <div
-              key={connector.id}
-              className="card"
-              style={{
-                marginBottom: 0,
-                padding: '14px',
-                borderLeft: isEnabled ? `3px solid ${pack.accent}` : 'none',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <div
-                  className="icon-box"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    background: isEnabled ? `${connector.color}20` : 'var(--c-secondary-bg)',
-                    color: isEnabled ? connector.color : 'var(--c-hint)',
-                  }}
-                >
-                  <Icon size={20} />
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--c-text)' }}>
-                      {connector.name}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '13px', color: 'var(--c-hint)', lineHeight: '1.4' }}>
-                    {connector.description}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleToggle(connector)}
-                  disabled={isLoading}
-                  aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${connector.name}`}
-                  className="toggle-btn"
-                  style={{
-                    background: isEnabled ? '#22c55e' : 'var(--c-secondary-bg)',
-                    color: isEnabled ? 'white' : 'var(--c-hint)',
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
-                    opacity: isLoading ? 0.7 : 1,
-                  }}
-                >
-                  {isLoading ? (
-                    <><RefreshCw size={14} className="spinner" /> ...</>
-                  ) : isEnabled ? (
-                    <><CheckCircle2 size={14} /> On</>
-                  ) : (
-                    <><Circle size={14} /> Off</>
-                  )}
-                </button>
-              </div>
-            </div>
-          )
-        })}
+        {filteredConnectors.map((connector) => (
+          <ConnectorCard
+            key={connector.id}
+            connector={connector}
+            isEnabled={enabled.includes(connector.mcp.serverName)}
+            isLoading={loading === connector.id}
+            accent={pack.accent}
+            onToggle={handleToggle}
+          />
+        ))}
       </div>
 
       {/* Info */}
