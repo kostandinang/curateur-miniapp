@@ -1,6 +1,6 @@
 import { Calendar, CheckCircle2, Clock, Flame, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
+import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
 interface HistoryEntry {
   date: string

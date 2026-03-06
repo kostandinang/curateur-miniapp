@@ -1,6 +1,6 @@
 import { Brain, ChevronLeft, ChevronRight, Clock, RotateCw, Trophy, Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
+import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
 interface FlashcardWord {
   de: string

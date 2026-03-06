@@ -1,6 +1,6 @@
 import { type ChangeEvent, useEffect, useState } from 'react'
 import { Clock, Calendar, Check, AlertCircle, RotateCcw, Save, Sun, Moon, Briefcase, TrendingUp, BookOpen, Flame, DollarSign, FolderKanban } from 'lucide-react'
-import { formatUtcToLocal, getTimezoneAbbr } from '../lib/time-utils'
+import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
 interface AgentConfig {
   id: string

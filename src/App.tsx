@@ -1,10 +1,12 @@
 import { Activity, Command, LayoutGrid, Zap } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
-import CommandPalette from './components/CommandPalette'
-import SessionStatus from './components/SessionStatus'
-import SkillsRunner from './components/SkillsRunner'
-import Widgets from './components/Widgets'
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { useNamingPack } from './hooks/useNamingPack'
+import CommandPalette from './shell/CommandPalette'
+import FacetSelector from './shell/FacetSelector'
+import HookRunner from './shell/HookRunner'
 import './App.css'
+
+const SessionStatus = lazy(() => import('./plugins/session-status/widget'))
 
 // Load secret from env or config at runtime
 const getSecretKey = (): string => {
@@ -77,12 +79,13 @@ function CurateurLogo({ size = 36 }: CurateurLogoProps) {
 }
 
 function App() {
+  const pack = useNamingPack()
   const [tg, setTg] = useState<TelegramWebApp | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('widgets')
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false)
-  const [activeWidget, setActiveWidget] = useState<string>('rates')
+  const [activeWidget, setActiveWidget] = useState<string>('exchange-rate')
 
   useEffect(() => {
     setIsLoading(true)
@@ -148,19 +151,17 @@ function App() {
           setActiveWidget(action)
           break
         case 'tool':
-          if (action === 'mcp') {
-            setActiveTab('tools')
-          } else {
-            setActiveTab('tools')
-            // Trigger the specific tool action
-            if (tg) {
-              tg.showPopup?.({
-                title: command.name,
-                message: `Running ${command.name}...`,
-                buttons: [{ id: 'ok', text: 'OK' }],
-              })
-            }
+          setActiveTab('tools')
+          if (tg && action !== 'mcp') {
+            tg.showPopup?.({
+              title: command.name,
+              message: `Running ${command.name}...`,
+              buttons: [{ id: 'ok', text: 'OK' }],
+            })
           }
+          break
+        case 'connector':
+          setActiveTab('tools')
           break
         case 'agent':
           // Send message to trigger agent - uses Telegram WebApp user ID
@@ -175,7 +176,6 @@ function App() {
           break
         case 'setting':
           if (action === 'theme') {
-            // Toggle theme logic
             document.body.style.filter =
               document.body.style.filter === 'invert(1)' ? '' : 'invert(1)'
           }
@@ -315,7 +315,7 @@ function App() {
             onClick={() => setActiveTab('widgets')}
           >
             <LayoutGrid size={16} />
-            Widgets
+            {pack.view}
           </button>
           <button
             type="button"
@@ -331,16 +331,20 @@ function App() {
             onClick={() => setActiveTab('tools')}
           >
             <Zap size={16} />
-            Tools
+            {pack.action}
           </button>
         </nav>
 
         <main className="content">
           {activeTab === 'widgets' && (
-            <Widgets activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
+            <FacetSelector activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
-          {activeTab === 'status' && <SessionStatus />}
-          {activeTab === 'tools' && <SkillsRunner />}
+          {activeTab === 'status' && (
+            <Suspense fallback={<div className="empty"><div className="spinner">Loading...</div></div>}>
+              <SessionStatus />
+            </Suspense>
+          )}
+          {activeTab === 'tools' && <HookRunner />}
         </main>
       </div>
 
