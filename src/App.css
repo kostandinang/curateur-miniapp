@@ -189,10 +189,15 @@
   flex: 1;
   border: none;
   background: transparent;
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 15px;
   color: var(--c-text);
   outline: none;
+}
+
+/* Amount inputs (exchange rate) need larger, bolder text */
+.input-group input.input-amount {
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .input-group input::placeholder {

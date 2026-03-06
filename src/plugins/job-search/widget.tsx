@@ -151,13 +151,6 @@ function JobSearch() {
           placeholder="Search jobs, companies, skills..."
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-          style={{
-            flex: 1,
-            border: 'none',
-            background: 'transparent',
-            outline: 'none',
-            fontSize: '15px',
-          }}
         />
       </div>
 

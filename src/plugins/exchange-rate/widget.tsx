@@ -86,6 +86,7 @@ function ExchangeRate() {
         <div className="input-group">
           <input
             type="number"
+            className="input-amount"
             value={threshold}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setThreshold(parseFloat(e.target.value) || 0)
