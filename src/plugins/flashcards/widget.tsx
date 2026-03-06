@@ -252,76 +252,32 @@ function Flashcards() {
     <>
       {/* Header Stats */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.9,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              German Vocabulary
-            </div>
+            <div className="hero-label">German Vocabulary</div>
             <div style={{ fontSize: '42px', fontWeight: 800, marginTop: '4px' }}>{stats.total}</div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>words learned</div>
+            <div className="hero-sub">words learned</div>
           </div>
-
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="icon-box lg hero">
             <Brain size={24} />
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            padding: '12px 16px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '12px',
-          }}
-        >
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Streak</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>{stats.streak} 🔥</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-label">Streak</div>
+            <div className="stat-value">{stats.streak} 🔥</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Daily Goal</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>{stats.dailyGoal}</div>
+          <div className="stat">
+            <div className="stat-label">Daily Goal</div>
+            <div className="stat-value">{stats.dailyGoal}</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Level</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>{level}</div>
+          <div className="stat">
+            <div className="stat-label">Level</div>
+            <div className="stat-value">{level}</div>
           </div>
         </div>
       </div>
@@ -564,6 +520,7 @@ function Flashcards() {
         <button
           type="button"
           onClick={handlePrev}
+          aria-label="Previous card"
           style={{
             width: '48px',
             height: '48px',
@@ -606,6 +563,7 @@ function Flashcards() {
         <button
           type="button"
           onClick={handleNext}
+          aria-label="Next card"
           style={{
             width: '48px',
             height: '48px',
