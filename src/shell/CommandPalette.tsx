@@ -22,7 +22,6 @@ interface CommandPaletteProps {
   isOpen: boolean
   onClose: () => void
   onSelect: (command: { name: string; action: string }) => void
-  currentView: string
 }
 
 function buildCommandsFromRegistry(pack: { view: string; action: string; connector: string }) {
@@ -77,7 +76,6 @@ function CommandPalette({
   isOpen,
   onClose,
   onSelect,
-  currentView: _currentView,
 }: CommandPaletteProps) {
   const { pack } = useNamingPack()
   const [search, setSearch] = useState<string>('')

@@ -369,7 +369,6 @@ function App() {
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onSelect={handleCommandSelect}
-        currentView={activeTab}
       />
     </>
   )
