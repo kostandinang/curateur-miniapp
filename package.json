@@ -31,8 +31,8 @@
     "typecheck": "tsc --noEmit",
     "typecheck:server": "tsc --noEmit -p tsconfig.server.json",
     "server": "tsx api/server.ts",
-    "lint": "biome check src/ api-server.ts",
-    "lint:fix": "biome check --write src/ api-server.ts",
-    "format": "biome format --write src/ api-server.ts"
+    "lint": "biome check src/ api/",
+    "lint:fix": "biome check --write src/ api/",
+    "format": "biome format --write src/ api/"
   }
 }
