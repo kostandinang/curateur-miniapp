@@ -1,6 +1,6 @@
 import { ArrowRight, Search } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { getIcon } from '../lib/icons'
 import { actions, connectors, views } from '../plugins/registry'
@@ -78,6 +78,7 @@ function CommandPalette({
   onSelect,
 }: CommandPaletteProps) {
   const { pack } = useNamingPack()
+  const inputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>('')
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const [recentCommands, setRecentCommands] = useState<string[]>(() => {
@@ -170,6 +171,10 @@ function CommandPalette({
     setSelectedIndex(0)
   }, [search])
 
+  useEffect(() => {
+    if (isOpen) inputRef.current?.focus()
+  }, [isOpen])
+
   if (!isOpen) return null
 
   let globalIndex = 0
@@ -192,6 +197,7 @@ function CommandPalette({
         <div className="cmd-search">
           <Search size={20} style={{ color: 'var(--c-hint)' }} />
           <input
+            ref={inputRef}
             type="text"
             placeholder="Search commands..."
             aria-label="Search commands"
