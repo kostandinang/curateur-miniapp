@@ -27,13 +27,13 @@
 
 ## Important
 
-### 4. Add test infrastructure
+### 4. Add test infrastructure (DONE)
 - **Problem:** Zero test files in the entire project. No regression protection.
-- **Fix:** Add Vitest (pairs with Vite). Start with:
-  - `api/middleware/auth.test.ts` — validate initData verification, Bearer token, public paths, graceful degradation
-  - `src/lib/api.test.ts` — header attachment logic
-  - `api/server.test.ts` — key endpoint integration tests (health, config, skill execute)
-- **Dependencies:** `vitest`, `@testing-library/react` (for future component tests)
+- **Fix:** Added Vitest. 30 tests across 3 files:
+  - `api/middleware/auth.test.ts` (9 tests) — initData HMAC validation, Bearer token, public paths, graceful degradation, priority
+  - `api/lib/sanitize.test.ts` (17 tests) — metacharacter stripping, length limits, attack strings, URL preservation
+  - `api/lib/skill-loader.test.ts` (4 tests) — dynamic manifest loading, type filtering, missing directory
+- Extracted `sanitizeInput` to `api/lib/sanitize.ts` and `loadAllowedSkillIds` to `api/lib/skill-loader.ts` for testability
 
 ### 5. Silent error swallowing
 - **Files:** `src/App.tsx:175`, `src/hooks/useNamingPack.ts:38-40`
@@ -86,6 +86,6 @@
 |-------|-------|--------|
 | Phase 1 (done) | #1 Auth middleware | ~30 min |
 | Phase 2 (done) | #2 Input validation, #3 MCP persistence | ~1 hr |
-| Phase 3 | #4 Vitest setup + auth tests | ~1 hr |
+| Phase 3 (done) | #4 Vitest setup + 30 tests | ~1 hr |
 | Phase 4 | #5-8 Code quality fixes | ~2 hr |
 | Phase 5 | #9-12 Polish | ~2 hr |

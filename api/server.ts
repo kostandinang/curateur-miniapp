@@ -1,6 +1,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import JSON5 from 'json5'
 
@@ -8,34 +8,11 @@ import { corsMiddleware } from './middleware/cors'
 import { authMiddleware } from './middleware/auth'
 import { hasBotToken, sendTelegramMessage } from './lib/telegram'
 import { WORKSPACE_DIR, fileExists, readJsonFile } from './lib/workspace'
+import { sanitizeInput } from './lib/sanitize'
+import { loadAllowedSkillIds } from './lib/skill-loader'
 
-// Build action allowlist dynamically from plugin manifests
-function loadAllowedSkillIds(): Set<string> {
-  const ids = new Set<string>()
-  const serverDir = path.dirname(new URL(import.meta.url).pathname)
-  const pluginsDir = path.join(serverDir, '..', 'src', 'plugins')
-  try {
-    for (const dir of readdirSync(pluginsDir, { withFileTypes: true })) {
-      if (!dir.isDirectory()) continue
-      const manifestPath = path.join(pluginsDir, dir.name, 'manifest.json')
-      try {
-        const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
-        if (manifest.type === 'action') ids.add(manifest.id)
-      } catch { /* skip dirs without valid manifest */ }
-    }
-  } catch { /* plugins dir not found */ }
-  return ids
-}
-
-const ALLOWED_SKILL_IDS = loadAllowedSkillIds()
-
-// Sanitize user input: strip shell metacharacters, limit length
-function sanitizeInput(value: string): string {
-  return value
-    .replace(/[;&|`$(){}[\]!#<>\\]/g, '')
-    .slice(0, 500)
-    .trim()
-}
+const serverDir = path.dirname(new URL(import.meta.url).pathname)
+const ALLOWED_SKILL_IDS = loadAllowedSkillIds(path.join(serverDir, '..', 'src', 'plugins'))
 
 const OPENCLAW_CONFIG_PATH = process.env.OPENCLAW_CONFIG_PATH || '/root/.openclaw/openclaw.json'
 
