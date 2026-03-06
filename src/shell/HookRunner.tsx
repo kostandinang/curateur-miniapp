@@ -1,5 +1,5 @@
 import { AlertCircle, ArrowLeft, CheckCircle2, Play, Puzzle } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
 import { getIcon } from '../lib/icons'
 import { useNamingPack } from '../hooks/useNamingPack'
@@ -26,6 +26,13 @@ function HookRunner() {
   const [inputs, setInputs] = useState<Record<string, string>>({})
   const [running, setRunning] = useState<boolean>(false)
   const [result, setResult] = useState<SkillResult | null>(null)
+
+  // Auto-clear result after 4 seconds
+  useEffect(() => {
+    if (!result) return
+    const t = setTimeout(() => setResult(null), 4000)
+    return () => clearTimeout(t)
+  }, [result])
 
   const handleActionClick = (action: ActionPlugin) => {
     setResult(null)
@@ -218,6 +225,22 @@ function HookRunner() {
   // Render actions grid
   return (
     <div style={{ padding: '8px 0' }}>
+      {result && (
+        <div
+          className="card"
+          style={{
+            marginBottom: '16px',
+            background: result.success ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+            border: `1px solid ${result.success ? '#22c55e' : '#ef4444'}`,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: result.success ? '#22c55e' : '#ef4444' }}>
+            {result.success ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+            {result.message}
+          </div>
+        </div>
+      )}
+
       <div
         className="hero-banner"
         style={{ background: pack.gradient, marginBottom: '20px' }}

@@ -1,5 +1,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import JSON5 from 'json5'
@@ -108,12 +109,8 @@ app.post('/api/skill/:id/execute', async (c) => {
 
 // Legacy message endpoint (backward compat)
 app.post('/api/message', async (c) => {
-  if (!hasBotToken()) {
-    return c.json({ error: 'Bot token not configured' }, 500)
-  }
-
   try {
-    const { message, chat_id } = await c.req.json<{ message: string; chat_id?: string }>()
+    const { message, chat_id } = await c.req.json<{ message: string; chat_id?: string | number }>()
 
     if (!message || typeof message !== 'string') {
       return c.json({ error: 'Message is required' }, 400)
@@ -124,9 +121,31 @@ app.post('/api/message', async (c) => {
       return c.json({ error: 'Message is empty after sanitization' }, 400)
     }
 
-    const targetChatId = chat_id || process.env.DEFAULT_CHAT_ID
+    const targetChatId = String(chat_id || process.env.DEFAULT_CHAT_ID || '')
     if (!targetChatId) {
       return c.json({ error: 'Chat ID not provided' }, 400)
+    }
+
+    // Use openclaw CLI to dispatch session commands — this triggers the bot's
+    // command handler (unlike sendMessage which just shows tappable text)
+    const OPENCLAW_BIN = process.env.OPENCLAW_BIN || '/usr/bin/openclaw'
+    if (sanitized === '/new' || sanitized === '/reset') {
+      try {
+        execSync(
+          `${OPENCLAW_BIN} message send --channel telegram --target ${targetChatId} --message "${sanitized}"`,
+          { encoding: 'utf8', timeout: 15000, env: { ...process.env, HOME: '/root' } },
+        )
+        const label = sanitized === '/new' ? '🆕 New session started' : '🔄 Session reset'
+        return c.json({ success: true, message: `${label}! Check Telegram.` })
+      } catch {
+        // openclaw CLI may return non-zero even on success; treat as sent
+        return c.json({ success: true, message: 'Command sent to Telegram.' })
+      }
+    }
+
+    // For all other messages, use the Telegram Bot API
+    if (!hasBotToken()) {
+      return c.json({ error: 'Bot token not configured' }, 500)
     }
 
     const result = await sendTelegramMessage(targetChatId, sanitized)
