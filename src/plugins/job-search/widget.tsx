@@ -140,81 +140,37 @@ function JobSearch() {
     <>
       {/* Header */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.9,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Active Jobs
-            </div>
+            <div className="hero-label">Active Jobs</div>
             <div style={{ fontSize: '42px', fontWeight: 800, marginTop: '4px' }}>
               {stats.active || filteredJobs.filter((j) => j.status === 'active').length}
             </div>
           </div>
-
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="icon-box lg hero">
             <Briefcase size={24} />
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            padding: '12px 16px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '12px',
-          }}
-        >
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Berlin</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-label">Berlin</div>
+            <div className="stat-value">
               {stats.berlin || filteredJobs.filter((j) => j.location?.includes('Berlin')).length}
             </div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Remote EU</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>
+          <div className="stat">
+            <div className="stat-label">Remote EU</div>
+            <div className="stat-value">
               {stats.remoteEU || filteredJobs.filter((j) => j.remote?.includes('Remote')).length}
             </div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Applied</div>
-            <div style={{ fontSize: '16px', fontWeight: 700 }}>
+          <div className="stat">
+            <div className="stat-label">Applied</div>
+            <div className="stat-value">
               {stats.applied || filteredJobs.filter((j) => j.status === 'applied').length}
             </div>
           </div>
@@ -240,15 +196,7 @@ function JobSearch() {
       </div>
 
       {/* Filters */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '6px',
-          marginBottom: '16px',
-          overflowX: 'auto',
-          padding: '4px 0',
-        }}
-      >
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', overflowX: 'auto', padding: '4px 0' }}>
         {(
           [
             { id: 'all', label: 'All' },
@@ -261,16 +209,10 @@ function JobSearch() {
             type="button"
             key={f.id}
             onClick={() => setFilter(f.id)}
+            className="filter-chip"
             style={{
-              padding: '8px 14px',
-              border: 'none',
-              borderRadius: '8px',
               background: filter === f.id ? '#0ea5e9' : 'var(--c-secondary-bg)',
               color: filter === f.id ? 'white' : 'var(--c-hint)',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
             }}
           >
             {f.label}
