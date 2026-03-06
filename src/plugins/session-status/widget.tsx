@@ -109,8 +109,6 @@ function SessionStatus() {
 
   const oc = status.openclaw
   const isSecure = oc.security.critical === 0 && oc.security.warn === 0
-  const mainSession = oc.sessions.active[0]
-  
   // Calculate total tokens across all sessions
   const totalTokensUsed = oc.sessions.active.reduce((sum, s) => sum + s.tokensUsed, 0)
   const totalTokensAvailable = oc.sessions.active.reduce((sum, s) => sum + s.tokensTotal, 0)

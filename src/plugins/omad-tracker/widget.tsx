@@ -83,14 +83,6 @@ function OMADTracker() {
   const hoursUntil: number = Math.floor(timeToCheckIn / (1000 * 60 * 60))
   const minutesUntil: number = Math.floor((timeToCheckIn % (1000 * 60 * 60)) / (1000 * 60))
 
-  const _getStatusColor = (): string => {
-    if (!data) return '#888'
-    if (data.streak >= 30) return '#22c55e'
-    if (data.streak >= 14) return '#10b981'
-    if (data.streak >= 7) return '#f59e0b'
-    return '#f97316'
-  }
-
   const getStatusMessage = (): string => {
     if (!data) return ''
     if (data.streak >= 30) return '🔥 Incredible! 30+ days!'

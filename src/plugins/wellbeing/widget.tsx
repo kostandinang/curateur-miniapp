@@ -168,7 +168,6 @@ function Wellbeing() {
   }
 
   const weeklyData: WeeklyDataPoint[] = getWeeklyData()
-  const _currentMood: MoodOption | undefined = MOODS.find((m) => m.value === selectedMood?.value)
 
   return (
     <>
