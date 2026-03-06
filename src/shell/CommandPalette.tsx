@@ -85,7 +85,7 @@ function CommandPalette({
   onSelect,
   currentView: _currentView,
 }: CommandPaletteProps) {
-  const pack = useNamingPack()
+  const { pack } = useNamingPack()
   const [search, setSearch] = useState<string>('')
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const [recentCommands, setRecentCommands] = useState<string[]>([])

@@ -19,7 +19,7 @@ interface MCPStatusResponse {
 }
 
 function TapManager() {
-  const pack = useNamingPack()
+  const { pack } = useNamingPack()
   const [enabled, setEnabled] = useState<string[]>([])
   const [loading, setLoading] = useState<string | null>(null)
   const [filter, setFilter] = useState<string>('all')

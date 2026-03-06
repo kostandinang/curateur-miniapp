@@ -79,7 +79,7 @@ function CurateurLogo({ size = 36 }: CurateurLogoProps) {
 }
 
 function App() {
-  const pack = useNamingPack()
+  const { pack } = useNamingPack()
   const [tg, setTg] = useState<TelegramWebApp | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('widgets')
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)

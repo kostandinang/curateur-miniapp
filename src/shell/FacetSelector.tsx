@@ -1,5 +1,6 @@
 import * as LucideIcons from 'lucide-react'
 import { type ComponentType, Suspense, lazy, useState } from 'react'
+import { useNamingPack } from '../hooks/useNamingPack'
 import { useSettings } from '../hooks/useSettings'
 import { views } from '../plugins/registry'
 import type { ViewPlugin } from '../plugins/schema'
@@ -25,6 +26,7 @@ interface FacetSelectorProps {
 
 function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
   const { enabledPlugins, loaded, toggle, reset, isEnabled } = useSettings()
+  const { pack, setPack } = useNamingPack()
   const [showSettings, setShowSettings] = useState<boolean>(false)
 
   if (!loaded) {
@@ -67,6 +69,8 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
           isEnabled={isEnabled}
           onToggle={toggle}
           onReset={reset}
+          currentPack={pack}
+          onPackChange={setPack}
         />
       </>
     )

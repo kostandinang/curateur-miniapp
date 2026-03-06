@@ -8,6 +8,24 @@ export function useSettings() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
+    // Try server config first
+    fetch('/api/config')
+      .then(r => r.json())
+      .then(config => {
+        if (config.plugins?.views?.length) {
+          setEnabledPlugins(config.plugins.views)
+        } else {
+          loadFromLocalStorage()
+        }
+        setLoaded(true)
+      })
+      .catch(() => {
+        loadFromLocalStorage()
+        setLoaded(true)
+      })
+  }, [])
+
+  function loadFromLocalStorage() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
@@ -18,8 +36,7 @@ export function useSettings() {
     } catch {
       setEnabledPlugins(views.filter(v => v.widget.defaultEnabled).map(v => v.id))
     }
-    setLoaded(true)
-  }, [])
+  }
 
   const toggle = useCallback((id: string) => {
     setEnabledPlugins(prev => {

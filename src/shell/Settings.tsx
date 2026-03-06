@@ -1,4 +1,5 @@
 import * as LucideIcons from 'lucide-react'
+import { NAMING_PACKS, type NamingPack } from '../plugins/naming-packs'
 import type { ViewPlugin } from '../plugins/schema'
 
 function getIcon(iconName: string) {
@@ -10,9 +11,11 @@ interface SettingsProps {
   isEnabled: (id: string) => boolean
   onToggle: (id: string) => void
   onReset: () => void
+  currentPack: NamingPack
+  onPackChange: (id: number) => void
 }
 
-function Settings({ views, isEnabled, onToggle, onReset }: SettingsProps) {
+function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChange }: SettingsProps) {
   const enabledCount = views.filter(v => isEnabled(v.id)).length
   const totalCount = views.length
 
@@ -73,6 +76,34 @@ function Settings({ views, isEnabled, onToggle, onReset }: SettingsProps) {
             <div style={{ fontSize: '28px', fontWeight: 700 }}>{totalCount}</div>
             <div style={{ fontSize: '11px', opacity: 0.8 }}>Total</div>
           </div>
+        </div>
+      </div>
+
+      {/* Naming Pack Picker */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ fontSize: '15px', fontWeight: 700, marginBottom: '10px', color: 'var(--c-text)' }}>Theme</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {NAMING_PACKS.map(p => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => onPackChange(p.id)}
+              style={{
+                padding: '12px 14px',
+                borderRadius: '12px',
+                border: currentPack.id === p.id ? '2px solid #6366f1' : '2px solid transparent',
+                background: currentPack.id === p.id ? '#6366f110' : 'var(--c-secondary-bg)',
+                cursor: 'pointer',
+                textAlign: 'left',
+                width: '100%',
+                color: 'inherit',
+                font: 'inherit',
+              }}
+            >
+              <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>{p.theme}</div>
+              <div style={{ fontSize: '12px', color: 'var(--c-hint)' }}>{p.view} · {p.action} · {p.connector}</div>
+            </button>
+          ))}
         </div>
       </div>
 

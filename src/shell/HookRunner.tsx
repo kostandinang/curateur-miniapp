@@ -21,7 +21,7 @@ interface MessageResponse {
 }
 
 function HookRunner() {
-  const pack = useNamingPack()
+  const { pack } = useNamingPack()
   const [selectedAction, setSelectedAction] = useState<ActionPlugin | null>(null)
   const [showTaps, setShowTaps] = useState<boolean>(false)
   const [inputs, setInputs] = useState<Record<string, string>>({})

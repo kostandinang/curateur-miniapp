@@ -33,6 +33,7 @@
     "server": "tsx api/server.ts",
     "lint": "biome check src/ api/",
     "lint:fix": "biome check --write src/ api/",
-    "format": "biome format --write src/ api/"
+    "format": "biome format --write src/ api/",
+    "setup": "tsx scripts/setup.ts"
   }
 }

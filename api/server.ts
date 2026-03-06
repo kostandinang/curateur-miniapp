@@ -42,6 +42,21 @@ app.route('/api/status', sessionStatusRoutes)
 
 // --- Shared endpoints ---
 
+// Config endpoints
+app.get('/api/config', async (c) => {
+  const configPath = path.join(process.cwd(), 'curateur.config.json')
+  const config = await readJsonFile(configPath, { namingPack: 0, plugins: { views: [], actions: [], connectors: [] } })
+  return c.json(config)
+})
+
+app.post('/api/config', async (c) => {
+  const configPath = path.join(process.cwd(), 'curateur.config.json')
+  const body = await c.req.json()
+  const fsPromises = await import('node:fs/promises')
+  await fsPromises.writeFile(configPath, JSON.stringify(body, null, 2))
+  return c.json({ success: true })
+})
+
 // Health check
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() })
