@@ -17,8 +17,8 @@ class WidgetErrorBoundary extends Component<Props, State> {
     return { hasError: true }
   }
 
-  componentDidCatch(error: Error) {
-    console.error(`Widget error${this.props.widgetName ? ` (${this.props.widgetName})` : ''}:`, error)
+  componentDidCatch() {
+    // Error captured by getDerivedStateFromError; logging stripped in prod
   }
 
   handleRetry = () => {

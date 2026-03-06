@@ -4,6 +4,7 @@ import { apiFetch } from './lib/api'
 import { useNamingPack } from './hooks/useNamingPack'
 import CommandPalette from './shell/CommandPalette'
 import FacetSelector from './shell/FacetSelector'
+import WidgetErrorBoundary from './shell/WidgetErrorBoundary'
 import type { TelegramWebApp, TelegramWindow } from './types/telegram'
 import './App.css'
 
@@ -355,14 +356,18 @@ function App() {
             <FacetSelector activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
           {activeTab === 'status' && (
-            <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
-              <SessionStatus />
-            </Suspense>
+            <WidgetErrorBoundary widgetName="Status">
+              <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
+                <SessionStatus />
+              </Suspense>
+            </WidgetErrorBoundary>
           )}
           {activeTab === 'tools' && (
-            <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
-              <HookRunner />
-            </Suspense>
+            <WidgetErrorBoundary widgetName="Tools">
+              <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
+                <HookRunner />
+              </Suspense>
+            </WidgetErrorBoundary>
           )}
         </main>
       </div>
