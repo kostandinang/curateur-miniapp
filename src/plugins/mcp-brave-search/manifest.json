@@ -1,0 +1,19 @@
+{
+  "id": "mcp-brave-search",
+  "name": "Brave Search",
+  "type": "connector",
+  "icon": "Search",
+  "color": "#f97316",
+  "description": "Web search using Brave Search API",
+  "mcp": {
+    "serverName": "brave-search",
+    "configSchema": {
+      "apiKey": {
+        "name": "apiKey",
+        "label": "API Key",
+        "type": "text",
+        "required": true
+      }
+    }
+  }
+}

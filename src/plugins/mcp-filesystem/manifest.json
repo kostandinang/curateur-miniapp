@@ -1,0 +1,20 @@
+{
+  "id": "mcp-filesystem",
+  "name": "File System",
+  "type": "connector",
+  "icon": "FolderOpen",
+  "color": "#f59e0b",
+  "description": "Read and write files on your system",
+  "mcp": {
+    "serverName": "filesystem",
+    "configSchema": {
+      "rootPath": {
+        "name": "rootPath",
+        "label": "Root Path",
+        "type": "text",
+        "required": true,
+        "default": "/root/.openclaw/workspace"
+      }
+    }
+  }
+}

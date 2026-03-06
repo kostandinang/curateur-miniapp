@@ -1,0 +1,21 @@
+{
+  "id": "loom-transcript",
+  "name": "Loom Transcript",
+  "type": "action",
+  "icon": "Video",
+  "color": "#6366f1",
+  "description": "Get video summaries from Loom URLs",
+  "skill": {
+    "agent": "loom-transcript.sh",
+    "command": "summarize loom",
+    "inputs": [
+      {
+        "name": "url",
+        "label": "Loom URL",
+        "type": "text",
+        "placeholder": "https://loom.com/share/...",
+        "required": true
+      }
+    ]
+  }
+}

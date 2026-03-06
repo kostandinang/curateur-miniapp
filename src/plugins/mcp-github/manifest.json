@@ -1,0 +1,19 @@
+{
+  "id": "mcp-github",
+  "name": "GitHub",
+  "type": "connector",
+  "icon": "Terminal",
+  "color": "#6366f1",
+  "description": "Repository management, issues, PRs, code search",
+  "mcp": {
+    "serverName": "github",
+    "configSchema": {
+      "token": {
+        "name": "token",
+        "label": "GitHub Token",
+        "type": "text",
+        "required": true
+      }
+    }
+  }
+}

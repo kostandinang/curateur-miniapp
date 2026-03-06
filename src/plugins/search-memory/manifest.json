@@ -1,0 +1,21 @@
+{
+  "id": "search-memory",
+  "name": "Search Memory",
+  "type": "action",
+  "icon": "Search",
+  "color": "#8b5cf6",
+  "description": "Find past notes and conversations",
+  "skill": {
+    "agent": "search-memory.sh",
+    "command": "search memory",
+    "inputs": [
+      {
+        "name": "query",
+        "label": "Search",
+        "type": "text",
+        "placeholder": "What are you looking for?",
+        "required": true
+      }
+    ]
+  }
+}

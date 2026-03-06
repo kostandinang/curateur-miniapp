@@ -1,0 +1,11 @@
+{
+  "id": "mcp-fetch",
+  "name": "Fetch",
+  "type": "connector",
+  "icon": "Globe",
+  "color": "#0ea5e9",
+  "description": "Make HTTP requests to any URL",
+  "mcp": {
+    "serverName": "fetch"
+  }
+}

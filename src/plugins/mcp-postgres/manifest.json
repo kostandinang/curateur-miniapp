@@ -1,0 +1,20 @@
+{
+  "id": "mcp-postgres",
+  "name": "PostgreSQL",
+  "type": "connector",
+  "icon": "Database",
+  "color": "#10b981",
+  "description": "Read and write PostgreSQL databases",
+  "mcp": {
+    "serverName": "postgres",
+    "configSchema": {
+      "connectionString": {
+        "name": "connectionString",
+        "label": "Connection String",
+        "type": "text",
+        "required": true,
+        "placeholder": "postgresql://user:pass@host:5432/db"
+      }
+    }
+  }
+}

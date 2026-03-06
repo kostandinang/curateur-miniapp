@@ -1,0 +1,16 @@
+{
+  "id": "wellbeing",
+  "name": "Mood Tracker",
+  "type": "view",
+  "icon": "Heart",
+  "color": "#f43f5e",
+  "description": "Daily wellbeing check-ins",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/wellbeing"
+  }
+}

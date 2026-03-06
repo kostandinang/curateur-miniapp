@@ -1,0 +1,16 @@
+{
+  "id": "voice-notes",
+  "name": "Voice Notes",
+  "type": "view",
+  "icon": "Mic",
+  "color": "#8b5cf6",
+  "description": "Voice recordings & transcripts",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/voice"
+  }
+}

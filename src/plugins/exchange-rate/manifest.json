@@ -1,0 +1,13 @@
+{
+  "id": "exchange-rate",
+  "name": "Exchange Rates",
+  "type": "view",
+  "icon": "TrendingUp",
+  "color": "#667eea",
+  "description": "USD/ALL currency tracker",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true,
+    "refreshInterval": 600
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "cost-heatmap",
+  "name": "Cost Heatmap",
+  "type": "view",
+  "icon": "DollarSign",
+  "color": "#16a34a",
+  "description": "LLM usage analytics",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true,
+    "refreshInterval": 600
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/costs"
+  }
+}

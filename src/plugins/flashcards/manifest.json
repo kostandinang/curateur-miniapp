@@ -1,0 +1,12 @@
+{
+  "id": "flashcards",
+  "name": "Learn German",
+  "type": "view",
+  "icon": "BookOpen",
+  "color": "#ec4899",
+  "description": "A2/B1 vocabulary flashcards",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  }
+}

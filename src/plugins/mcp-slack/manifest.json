@@ -1,0 +1,19 @@
+{
+  "id": "mcp-slack",
+  "name": "Slack",
+  "type": "connector",
+  "icon": "MessageSquare",
+  "color": "#ec4899",
+  "description": "Post messages and manage channels",
+  "mcp": {
+    "serverName": "slack",
+    "configSchema": {
+      "token": {
+        "name": "token",
+        "label": "Slack Bot Token",
+        "type": "text",
+        "required": true
+      }
+    }
+  }
+}

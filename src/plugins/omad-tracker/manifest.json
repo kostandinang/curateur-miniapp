@@ -1,0 +1,17 @@
+{
+  "id": "omad-tracker",
+  "name": "OMAD Tracker",
+  "type": "view",
+  "icon": "Flame",
+  "color": "#f97316",
+  "description": "Fasting streak tracker",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true,
+    "refreshInterval": 300
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/omad"
+  }
+}

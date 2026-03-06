@@ -1,0 +1,16 @@
+{
+  "id": "voice-to-text",
+  "name": "Voice to Text",
+  "type": "view",
+  "icon": "FileText",
+  "color": "#ec4899",
+  "description": "Transcribe voice messages",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/voice-transcripts"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "job-search",
+  "name": "Job Search",
+  "type": "view",
+  "icon": "Briefcase",
+  "color": "#0ea5e9",
+  "description": "Full stack job positions",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/jobs"
+  }
+}

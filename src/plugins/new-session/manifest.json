@@ -1,0 +1,13 @@
+{
+  "id": "new-session",
+  "name": "New Session",
+  "type": "action",
+  "icon": "Plus",
+  "color": "#0ea5e9",
+  "description": "Start fresh with cleared context",
+  "skill": {
+    "agent": "new-session.sh",
+    "command": "/new",
+    "inputs": []
+  }
+}

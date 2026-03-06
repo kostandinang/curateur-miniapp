@@ -1,0 +1,17 @@
+{
+  "id": "system-monitor",
+  "name": "System Monitor",
+  "type": "view",
+  "icon": "Activity",
+  "color": "#06b6d4",
+  "description": "CPU, RAM, Disk, Network stats",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true,
+    "refreshInterval": 30
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/system"
+  }
+}

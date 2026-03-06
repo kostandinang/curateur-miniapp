@@ -1,0 +1,13 @@
+{
+  "id": "reset-session",
+  "name": "Reset Session",
+  "type": "action",
+  "icon": "RotateCcw",
+  "color": "#f59e0b",
+  "description": "Clear all context and restart",
+  "skill": {
+    "agent": "reset-session.sh",
+    "command": "/reset",
+    "inputs": []
+  }
+}

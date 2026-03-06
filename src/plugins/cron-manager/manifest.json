@@ -1,0 +1,16 @@
+{
+  "id": "cron-manager",
+  "name": "Scheduler",
+  "type": "view",
+  "icon": "Clock",
+  "color": "#f59e0b",
+  "description": "Manage agent cron schedules",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/crons"
+  }
+}

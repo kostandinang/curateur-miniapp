@@ -1,0 +1,13 @@
+{
+  "id": "system-status",
+  "name": "System Status",
+  "type": "action",
+  "icon": "Activity",
+  "color": "#22c55e",
+  "description": "Check OpenClaw health and connection",
+  "skill": {
+    "agent": "system-status.sh",
+    "command": "/status",
+    "inputs": []
+  }
+}

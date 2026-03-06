@@ -1,0 +1,11 @@
+{
+  "id": "mcp-puppeteer",
+  "name": "Puppeteer",
+  "type": "connector",
+  "icon": "Globe",
+  "color": "#0ea5e9",
+  "description": "Browser automation and web scraping",
+  "mcp": {
+    "serverName": "puppeteer"
+  }
+}

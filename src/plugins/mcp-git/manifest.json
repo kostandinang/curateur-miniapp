@@ -1,0 +1,11 @@
+{
+  "id": "mcp-git",
+  "name": "Git",
+  "type": "connector",
+  "icon": "Terminal",
+  "color": "#6366f1",
+  "description": "Read git history and manage branches",
+  "mcp": {
+    "serverName": "git"
+  }
+}

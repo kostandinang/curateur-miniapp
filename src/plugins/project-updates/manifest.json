@@ -1,0 +1,16 @@
+{
+  "id": "project-updates",
+  "name": "Project Updates",
+  "type": "view",
+  "icon": "FolderKanban",
+  "color": "#f97316",
+  "description": "Daily standup notes",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/projects"
+  }
+}
