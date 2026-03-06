@@ -233,50 +233,33 @@ function CronManager() {
   return (
     <>
       {/* Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-        borderRadius: '20px',
-        padding: '24px',
-        color: 'white',
-        marginBottom: '16px'
-      }}>
+      <div
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '12px',
-            background: 'rgba(255,255,255,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div className="icon-box lg hero">
             <Clock size={24} />
           </div>
           <div>
             <div style={{ fontSize: '24px', fontWeight: 800 }}>Agent Scheduler</div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>Customize when agents run</div>
+            <div className="hero-sub">Customize when agents run</div>
           </div>
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          padding: '12px 16px',
-          background: 'rgba(255,255,255,0.15)',
-          borderRadius: '12px'
-        }}>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{AGENT_CONFIG.length}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Agents</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-value">{AGENT_CONFIG.length}</div>
+            <div className="stat-label">Agents</div>
           </div>
-          <div style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>
+          <div className="stat">
+            <div className="stat-value">
               {Object.values(schedules).filter(s => {
                 const agent = AGENT_CONFIG.find(a => a.defaultSchedule !== s)
                 return agent !== undefined
               }).length}
             </div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Custom</div>
+            <div className="stat-label">Custom</div>
           </div>
         </div>
       </div>
