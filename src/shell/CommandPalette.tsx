@@ -80,7 +80,14 @@ function CommandPalette({
   const { pack } = useNamingPack()
   const [search, setSearch] = useState<string>('')
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
-  const [recentCommands, setRecentCommands] = useState<string[]>([])
+  const [recentCommands, setRecentCommands] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('curateur-recent-commands')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
 
   const commandGroups = useMemo(() => buildCommandsFromRegistry(pack), [pack])
 
@@ -125,6 +132,7 @@ function CommandPalette({
     (command: FlatCommand) => {
       setRecentCommands((prev) => {
         const updated = [command.id, ...prev.filter((id) => id !== command.id)].slice(0, 5)
+        try { localStorage.setItem('curateur-recent-commands', JSON.stringify(updated)) } catch { /* ignore */ }
         return updated
       })
 

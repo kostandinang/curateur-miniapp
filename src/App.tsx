@@ -351,7 +351,7 @@ function App() {
           </button>
         </nav>
 
-        <main className="content">
+        <main className="content" role="tabpanel">
           {activeTab === 'widgets' && (
             <FacetSelector activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
