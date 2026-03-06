@@ -119,34 +119,23 @@ function SessionStatus() {
   return (
     <>
       {/* Header - Gateway Status */}
-      <div style={{
-        background: oc.gateway.reachable 
-          ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' 
-          : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-        borderRadius: '20px',
-        padding: '24px',
-        color: 'white',
-        marginBottom: '16px'
-      }}>
+      <div
+        className="hero-banner"
+        style={{
+          background: oc.gateway.reachable
+            ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
+            : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '12px',
-            background: 'rgba(255,255,255,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div className="icon-box lg hero">
             <Server size={24} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: '24px', fontWeight: 800 }}>
               {oc.gateway.reachable ? 'Connected' : 'Disconnected'}
             </div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>
-              OpenClaw v{oc.version}
-            </div>
+            <div className="hero-sub">OpenClaw v{oc.version}</div>
           </div>
           {oc.update.available && (
             <span style={{
@@ -161,24 +150,18 @@ function SessionStatus() {
           )}
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          padding: '12px 16px',
-          background: 'rgba(255,255,255,0.15)',
-          borderRadius: '12px'
-        }}>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{oc.gateway.latencyMs}ms</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Latency</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-value">{oc.gateway.latencyMs}ms</div>
+            <div className="stat-label">Latency</div>
           </div>
-          <div style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{oc.agents.count}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Agents</div>
+          <div className="stat">
+            <div className="stat-value">{oc.agents.count}</div>
+            <div className="stat-label">Agents</div>
           </div>
-          <div style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{oc.sessions.total}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Sessions</div>
+          <div className="stat">
+            <div className="stat-value">{oc.sessions.total}</div>
+            <div className="stat-label">Sessions</div>
           </div>
         </div>
       </div>
