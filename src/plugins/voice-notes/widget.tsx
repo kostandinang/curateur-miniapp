@@ -136,43 +136,18 @@ function VoiceNotes() {
     <>
       {/* Header Stats */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.9,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Voice Notes
-            </div>
+            <div className="hero-label">Voice Notes</div>
             <div style={{ fontSize: '42px', fontWeight: 800, marginTop: '4px' }}>
               {notes.length}
             </div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>recordings saved</div>
+            <div className="hero-sub">recordings saved</div>
           </div>
-
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="icon-box lg hero">
             <Mic size={24} />
           </div>
         </div>
@@ -220,8 +195,6 @@ function VoiceNotes() {
         )}
       </button>
 
-      <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
-
       {/* Search */}
       <div className="input-group" style={{ marginBottom: '16px' }}>
         <Search size={18} style={{ color: 'var(--c-hint)' }} />
@@ -248,6 +221,7 @@ function VoiceNotes() {
               <button
                 type="button"
                 onClick={() => handlePlay(note.id)}
+                aria-label={playing === note.id ? 'Pause' : 'Play'}
                 style={{
                   width: '40px',
                   height: '40px',
@@ -286,6 +260,7 @@ function VoiceNotes() {
               <button
                 type="button"
                 onClick={() => handleDelete(note.id)}
+                aria-label="Delete note"
                 style={{
                   width: '32px',
                   height: '32px',
