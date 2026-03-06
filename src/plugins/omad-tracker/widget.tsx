@@ -25,7 +25,6 @@ interface OMADData {
 function OMADTracker() {
   const [data, setData] = useState<OMADData | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [_error, setError] = useState<string | null>(null)
 
   const fetchData = async (): Promise<void> => {
     try {
@@ -34,9 +33,7 @@ function OMADTracker() {
       if (!res.ok) throw new Error('Failed to fetch')
       const omadData: OMADData = await res.json()
       setData(omadData)
-      setError(null)
-    } catch (err) {
-      setError((err as Error).message)
+    } catch {
       // Fallback to calculating from start date
       const startDate = new Date('2026-02-01')
       const today = new Date()

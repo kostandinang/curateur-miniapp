@@ -27,11 +27,9 @@ function CostHeatmap() {
   const [usageData, setUsageData] = useState<UsageDay[]>([])
   const [stats, setStats] = useState<CostStats>({ total: 0, daily: 0, peak: 0 })
   const [loading, setLoading] = useState<boolean>(true)
-  const [_error, setError] = useState<string | null>(null)
 
   const fetchCostData = async (): Promise<void> => {
     setLoading(true)
-    setError(null)
 
     try {
       // Try to fetch from API first
