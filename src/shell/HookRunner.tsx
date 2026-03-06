@@ -6,7 +6,7 @@ import { useNamingPack } from '../hooks/useNamingPack'
 import type { TelegramWindow } from '../types/telegram'
 import { actions, connectors } from '../plugins/registry'
 import type { ActionPlugin, SkillInput } from '../plugins/schema'
-import TapManager from './TapManager'
+import ConnectorManager from './ConnectorManager'
 
 interface SkillResult {
   success: boolean
@@ -22,7 +22,7 @@ interface MessageResponse {
 function HookRunner() {
   const { pack } = useNamingPack()
   const [selectedAction, setSelectedAction] = useState<ActionPlugin | null>(null)
-  const [showTaps, setShowTaps] = useState<boolean>(false)
+  const [showConnectors, setShowConnectors] = useState<boolean>(false)
   const [inputs, setInputs] = useState<Record<string, string>>({})
   const [running, setRunning] = useState<boolean>(false)
   const [result, setResult] = useState<SkillResult | null>(null)
@@ -88,20 +88,20 @@ function HookRunner() {
 
   const handleBack = () => {
     setSelectedAction(null)
-    setShowTaps(false)
+    setShowConnectors(false)
     setResult(null)
     setInputs({})
   }
 
   // Render TapManager
-  if (showTaps) {
+  if (showConnectors) {
     return (
       <div style={{ padding: '8px 0' }}>
         <button type="button" onClick={handleBack} className="back-btn">
           <ArrowLeft size={18} />
           Back to {pack.action}
         </button>
-        <TapManager />
+        <ConnectorManager />
       </div>
     )
   }
@@ -260,7 +260,7 @@ function HookRunner() {
         {connectors.length > 0 && (
           <button
             type="button"
-            onClick={() => setShowTaps(true)}
+            onClick={() => setShowConnectors(true)}
             className="action-tile"
             aria-label={`${pack.connector}: Configure external tools and integrations`}
           >

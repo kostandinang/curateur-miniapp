@@ -16,7 +16,7 @@ interface MCPStatusResponse {
   servers?: Record<string, MCPServerStatus>
 }
 
-function TapManager() {
+function ConnectorManager() {
   const { pack } = useNamingPack()
   const [enabled, setEnabled] = useState<string[]>([])
   const [loading, setLoading] = useState<string | null>(null)
@@ -222,4 +222,4 @@ function TapManager() {
   )
 }
 
-export default TapManager
+export default ConnectorManager
