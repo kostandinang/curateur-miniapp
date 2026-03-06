@@ -1,5 +1,5 @@
 import { Activity, AlertCircle, Calendar, DollarSign, RefreshCw, TrendingUp } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 
 interface UsageDay {
@@ -28,7 +28,7 @@ function CostHeatmap() {
   const [stats, setStats] = useState<CostStats>({ total: 0, daily: 0, peak: 0 })
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchCostData = async (): Promise<void> => {
+  const fetchCostData = useCallback(async (): Promise<void> => {
     setLoading(true)
 
     try {
@@ -48,7 +48,7 @@ function CostHeatmap() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const generateMockData = (): void => {
     // Generate realistic mock data based on typical usage patterns
@@ -94,7 +94,7 @@ function CostHeatmap() {
 
   useEffect(() => {
     fetchCostData()
-  }, [])
+  }, [fetchCostData])
 
   const getColorForIntensity = (intensity: number): string => {
     if (intensity === 0) return 'var(--c-secondary-bg)'

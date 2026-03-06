@@ -1,5 +1,5 @@
 import { Calendar, Heart, Moon, RefreshCw, Sparkles, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 
 interface MoodOption {
@@ -77,7 +77,7 @@ function Wellbeing() {
   const [timeOfDay, setTimeOfDay] = useState<string>('morning')
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchData = async (): Promise<void> => {
+  const fetchData = useCallback(async (): Promise<void> => {
     try {
       setLoading(true)
       const res = await apiFetch('/api/wellbeing')
@@ -114,7 +114,7 @@ function Wellbeing() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const getPreviousDate = (daysAgo: number): string => {
     const d = new Date()
@@ -127,7 +127,7 @@ function Wellbeing() {
     setTimeOfDay(hour < 12 ? 'morning' : 'evening')
 
     fetchData()
-  }, [])
+  }, [fetchData])
 
   const handleMoodSelect = (mood: MoodOption): void => {
     setSelectedMood(mood)

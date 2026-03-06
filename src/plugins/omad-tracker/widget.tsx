@@ -1,5 +1,5 @@
 import { Calendar, CheckCircle2, Clock, Flame, RefreshCw } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
 
@@ -26,7 +26,7 @@ function OMADTracker() {
   const [data, setData] = useState<OMADData | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchData = async (): Promise<void> => {
+  const fetchData = useCallback(async (): Promise<void> => {
     try {
       setLoading(true)
       const res = await apiFetch('/api/omad')
@@ -62,14 +62,13 @@ function OMADTracker() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchData()
-    // Refresh every 5 minutes
     const interval = setInterval(fetchData, 5 * 60 * 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchData])
 
   const nextCheckIn = new Date()
   nextCheckIn.setUTCHours(16, 30, 0, 0)

@@ -1,5 +1,5 @@
 import { Activity, Brain, Cpu, Layers, RefreshCw, Server, Shield, Zap } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 
 interface OpenClawSession {
@@ -61,7 +61,7 @@ function SessionStatus() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     try {
       setLoading(true)
       const response = await apiFetch('/api/status')
@@ -74,13 +74,13 @@ function SessionStatus() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchStatus()
     const interval = setInterval(fetchStatus, 30000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchStatus])
 
   if (loading) {
     return (
