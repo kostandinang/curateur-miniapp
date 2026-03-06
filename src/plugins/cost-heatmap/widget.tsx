@@ -126,75 +126,33 @@ function CostHeatmap() {
     <>
       {/* Stats Overview */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)' }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.9,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              30-Day Total
-            </div>
+            <div className="hero-label">30-Day Total</div>
             <div style={{ fontSize: '42px', fontWeight: 800, marginTop: '4px' }}>
               ${stats.total.toFixed(2)}
             </div>
           </div>
-
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="icon-box lg hero">
             <DollarSign size={24} />
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '16px',
-            padding: '12px 16px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '12px',
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '12px', opacity: 0.8 }}>Daily Avg</div>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>${stats.daily}</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-label">Daily Avg</div>
+            <div className="stat-value">${stats.daily}</div>
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '12px', opacity: 0.8 }}>Peak Day</div>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>${stats.peak.toFixed(2)}</div>
+          <div className="stat">
+            <div className="stat-label">Peak Day</div>
+            <div className="stat-value">${stats.peak.toFixed(2)}</div>
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '12px', opacity: 0.8 }}>Est. Tokens</div>
-            <div style={{ fontSize: '18px', fontWeight: 700 }}>
-              {(stats.total * 1500).toLocaleString()}
-            </div>
+          <div className="stat">
+            <div className="stat-label">Est. Tokens</div>
+            <div className="stat-value">{(stats.total * 1500).toLocaleString()}</div>
           </div>
         </div>
       </div>
