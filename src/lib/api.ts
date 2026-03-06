@@ -29,3 +29,12 @@ export function apiFetch(input: string, init?: RequestInit): Promise<Response> {
   }
   return fetch(input, mergedInit)
 }
+
+/** Typed JSON fetch — parses response and returns typed data. */
+export async function apiFetchJson<T>(input: string, init?: RequestInit): Promise<T> {
+  const res = await apiFetch(input, init)
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status} ${res.statusText}`)
+  }
+  return res.json() as Promise<T>
+}
