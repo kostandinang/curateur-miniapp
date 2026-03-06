@@ -4,11 +4,11 @@ import { apiFetch } from './lib/api'
 import { useNamingPack } from './hooks/useNamingPack'
 import CommandPalette from './shell/CommandPalette'
 import FacetSelector from './shell/FacetSelector'
-import HookRunner from './shell/HookRunner'
 import type { TelegramWebApp, TelegramWindow } from './types/telegram'
 import './App.css'
 
 const SessionStatus = lazy(() => import('./plugins/session-status/widget'))
+const HookRunner = lazy(() => import('./shell/HookRunner'))
 
 const SECRET_KEY = (import.meta.env.VITE_SECRET_KEY as string) || ''
 
@@ -359,7 +359,11 @@ function App() {
               <SessionStatus />
             </Suspense>
           )}
-          {activeTab === 'tools' && <HookRunner />}
+          {activeTab === 'tools' && (
+            <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
+              <HookRunner />
+            </Suspense>
+          )}
         </main>
       </div>
 
