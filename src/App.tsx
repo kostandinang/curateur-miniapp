@@ -297,6 +297,7 @@ function App() {
           <button
             type="button"
             onClick={() => setIsCommandPaletteOpen(true)}
+            aria-label="Open command palette"
             style={{
               marginLeft: 'auto',
               padding: '8px 12px',
@@ -317,9 +318,11 @@ function App() {
           </button>
         </header>
 
-        <nav className="nav">
+        <nav className="nav" role="tablist" aria-label="Main navigation">
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'widgets'}
             className={`nav-btn ${activeTab === 'widgets' ? 'active' : ''}`}
             onClick={() => setActiveTab('widgets')}
           >
@@ -328,6 +331,8 @@ function App() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'status'}
             className={`nav-btn ${activeTab === 'status' ? 'active' : ''}`}
             onClick={() => setActiveTab('status')}
           >
@@ -336,6 +341,8 @@ function App() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'tools'}
             className={`nav-btn ${activeTab === 'tools' ? 'active' : ''}`}
             onClick={() => setActiveTab('tools')}
           >
