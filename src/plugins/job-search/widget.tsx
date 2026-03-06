@@ -1,6 +1,7 @@
 import { Briefcase, Building2, Clock, DollarSign, MapPin, RefreshCw, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
+import { MOCK_JOBS, MOCK_JOB_STATS } from '../../lib/mock-data'
 
 interface Job {
   id: string
@@ -57,43 +58,8 @@ function JobSearch() {
         throw new Error('No jobs found')
       }
     } catch (_err) {
-      console.log('Using fallback job data')
-      // Fallback to curated list
-      setJobs([
-        {
-          id: 'job-001',
-          company: 'N26',
-          title: 'Senior Full Stack Engineer',
-          location: 'Berlin, Germany',
-          remote: 'Hybrid',
-          salary: '€85,000 - €110,000',
-          skills: ['Node.js', 'React', 'TypeScript'],
-          url: 'https://n26.com/careers',
-          posted: '2026-03-04',
-          status: 'active',
-          source: 'hiring.cafe',
-        },
-        {
-          id: 'job-002',
-          company: 'Contentful',
-          title: 'Staff Full Stack Engineer',
-          location: 'Berlin, Germany',
-          remote: 'Remote EU',
-          salary: '€95,000 - €130,000',
-          skills: ['Node.js', 'React', 'GraphQL'],
-          url: 'https://contentful.com/careers',
-          posted: '2026-03-03',
-          status: 'active',
-          source: 'hiring.cafe',
-        },
-      ])
-      setStats({
-        total: 2,
-        active: 2,
-        applied: 0,
-        berlin: 2,
-        remoteEU: 1,
-      })
+      setJobs(MOCK_JOBS)
+      setStats(MOCK_JOB_STATS)
     } finally {
       setLoading(false)
     }

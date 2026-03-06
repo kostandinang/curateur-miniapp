@@ -1,6 +1,7 @@
 import { FileAudio, Mic, Pause, Play, RefreshCw, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
+import { MOCK_VOICE_NOTE } from '../../lib/mock-data'
 
 interface VoiceNote {
   id: number
@@ -44,18 +45,8 @@ function VoiceNotes() {
       }))
 
       setNotes(notesWithTranscripts)
-    } catch (err) {
-      console.error('Error fetching voice notes:', err)
-      // Use mock data as fallback
-      setNotes([
-        {
-          id: 1,
-          filename: 'voice_2026-03-04.mp3',
-          timestamp: new Date().toISOString(),
-          duration: '0:45',
-          transcript: 'Demo voice note.',
-        },
-      ])
+    } catch {
+      setNotes([MOCK_VOICE_NOTE])
     } finally {
       setLoading(false)
     }
