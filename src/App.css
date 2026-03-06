@@ -593,6 +593,17 @@
   margin-bottom: 6px;
 }
 
+.form-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--c-secondary-bg);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: 14px;
+  font: inherit;
+}
+
 /* Toggle Button */
 .toggle-btn {
   padding: 8px 14px;

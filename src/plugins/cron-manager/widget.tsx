@@ -324,15 +324,7 @@ function CronManager() {
                   <select
                     value={cron.hour}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => updateSchedule(agent.id, 'hour', parseInt(e.target.value))}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      borderRadius: '10px',
-                      border: '1px solid var(--c-secondary-bg)',
-                      background: 'var(--c-bg)',
-                      color: 'var(--c-text)',
-                      fontSize: '14px'
-                    }}
+                    className="form-select"
                   >
                     {HOURS.map(h => (
                       <option key={h} value={h}>{h.toString().padStart(2, '0')}:00</option>
@@ -345,15 +337,7 @@ function CronManager() {
                   <select
                     value={cron.minute}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => updateSchedule(agent.id, 'minute', parseInt(e.target.value))}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      borderRadius: '10px',
-                      border: '1px solid var(--c-secondary-bg)',
-                      background: 'var(--c-bg)',
-                      color: 'var(--c-text)',
-                      fontSize: '14px'
-                    }}
+                    className="form-select"
                   >
                     {MINUTES.map(m => (
                       <option key={m} value={m}>{m.toString().padStart(2, '0')}</option>
@@ -393,6 +377,7 @@ function CronManager() {
       {/* Actions */}
       <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
         <button
+          type="button"
           onClick={saveSchedules}
           disabled={saving || !hasChanges}
           style={{
@@ -416,6 +401,7 @@ function CronManager() {
         </button>
 
         <button
+          type="button"
           onClick={resetToDefaults}
           style={{
             padding: '14px',
