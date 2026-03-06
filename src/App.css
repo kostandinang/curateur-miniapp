@@ -286,9 +286,34 @@
   50% { transform: scale(1.1); opacity: 0.8; }
 }
 
+@keyframes loader-fade {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
 .spinner {
   animation: spin 1s linear infinite;
 }
+
+/* Themed dot loader for initial/suspense loading */
+.loader-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.loader-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  animation: loader-fade 1.2s ease-in-out infinite;
+}
+
+.loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+.loader-dots span:nth-child(3) { animation-delay: 0.3s; }
 
 /* List Items */
 .list-item {

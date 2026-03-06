@@ -206,7 +206,9 @@ function App() {
         }}
       >
         <CurateurLogo size={48} />
-        <div style={{ color: '#666', fontSize: '14px' }}>Loading...</div>
+        <div className="loader-dots">
+          <span /><span /><span />
+        </div>
       </div>
     )
   }
@@ -347,7 +349,7 @@ function App() {
             <FacetSelector activeWidget={activeWidget} setActiveWidget={setActiveWidget} />
           )}
           {activeTab === 'status' && (
-            <Suspense fallback={<div className="empty"><div className="spinner">Loading...</div></div>}>
+            <Suspense fallback={<div className="empty"><div className="loader-dots"><span /><span /><span /></div></div>}>
               <SessionStatus />
             </Suspense>
           )}

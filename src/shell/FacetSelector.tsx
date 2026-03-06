@@ -33,7 +33,7 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
   if (!loaded) {
     return (
       <div className="empty">
-        <div className="spinner">Loading...</div>
+        <div className="loader-dots"><span /><span /><span /></div>
       </div>
     )
   }
@@ -175,7 +175,7 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
           <Suspense
             fallback={
               <div className="empty">
-                <div className="spinner">Loading...</div>
+                <div className="loader-dots"><span /><span /><span /></div>
               </div>
             }
           >
