@@ -30,22 +30,22 @@ interface CommandAction {
 
 interface CurateurLogoProps {
   size?: number
+  gradient?: string
 }
 
-// Curateur Logo Component - Creative "C" design
-function CurateurLogo({ size = 36 }: CurateurLogoProps) {
+function CurateurLogo({ size = 36, gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }: CurateurLogoProps) {
   return (
-    <div 
-      className="logo" 
-      style={{ 
-        width: size, 
-        height: size, 
+    <div
+      className="logo"
+      style={{
+        width: size,
+        height: size,
         borderRadius: '12px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: gradient,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
       }}
     >
       <svg
@@ -58,7 +58,6 @@ function CurateurLogo({ size = 36 }: CurateurLogoProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {/* Stylized C that looks like a claw/pincer */}
         <path d="M19 5c-3-3-8-3-11 0s-3 8 0 11 8 3 11 0" />
         <circle cx="8" cy="12" r="2" fill="white" stroke="none" />
       </svg>
@@ -205,7 +204,7 @@ function App() {
           gap: '16px',
         }}
       >
-        <CurateurLogo size={48} />
+        <CurateurLogo size={48} gradient={pack.gradient} />
         <div className="loader-dots">
           <span /><span /><span />
         </div>
@@ -285,12 +284,12 @@ function App() {
 
   return (
     <>
-      <div className="app">
+      <div className="app" style={{ '--c-pack-accent': pack.accent, '--c-pack-gradient': pack.gradient } as React.CSSProperties}>
         <header className="header">
-          <CurateurLogo />
+          <CurateurLogo gradient={pack.gradient} />
           <div className="brand">
             <h1>Curateur</h1>
-            <span>Your friendly digital companion 🦞</span>
+            <span>{pack.tagline} {pack.emoji}</span>
           </div>
 
           {/* Command Palette Trigger */}

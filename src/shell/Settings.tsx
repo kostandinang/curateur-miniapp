@@ -21,7 +21,7 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
       {/* Header */}
       <div
         className="hero-banner"
-        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
+        style={{ background: currentPack.gradient }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
           <div className="icon-box lg hero">
@@ -63,8 +63,8 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
               style={{
                 padding: '12px 14px',
                 borderRadius: '12px',
-                border: currentPack.id === p.id ? '2px solid #6366f1' : '2px solid transparent',
-                background: currentPack.id === p.id ? '#6366f110' : 'var(--c-secondary-bg)',
+                border: currentPack.id === p.id ? `2px solid ${currentPack.accent}` : '2px solid transparent',
+                background: currentPack.id === p.id ? `${currentPack.accent}10` : 'var(--c-secondary-bg)',
                 cursor: 'pointer',
                 textAlign: 'left',
                 width: '100%',
@@ -72,8 +72,14 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
                 font: 'inherit',
               }}
             >
-              <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>{p.theme}</div>
-              <div style={{ fontSize: '12px', color: 'var(--c-hint)' }}>{p.view} · {p.action} · {p.connector}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>{p.emoji}</span>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>{p.theme}</div>
+                  <div style={{ fontSize: '12px', color: 'var(--c-hint)' }}>{p.view} · {p.action} · {p.connector}</div>
+                </div>
+                <div style={{ marginLeft: 'auto', width: '12px', height: '12px', borderRadius: '50%', background: p.accent }} />
+              </div>
             </button>
           ))}
         </div>

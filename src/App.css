@@ -90,7 +90,7 @@
 
 .nav-btn.active {
   background: var(--c-secondary-bg);
-  color: var(--c-accent);
+  color: var(--c-pack-accent, var(--c-accent));
 }
 
 /* Content Area */
@@ -308,7 +308,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--c-accent);
+  background: var(--c-pack-accent, var(--c-accent));
   animation: loader-fade 1.2s ease-in-out infinite;
 }
 

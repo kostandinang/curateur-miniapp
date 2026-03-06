@@ -91,7 +91,7 @@ function ConnectorManager() {
       {/* Header */}
       <div
         className="hero-banner"
-        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)' }}
+        style={{ background: pack.gradient }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div>
@@ -132,7 +132,7 @@ function ConnectorManager() {
             onClick={() => setFilter(f.id)}
             className="filter-chip"
             style={{
-              background: filter === f.id ? '#6366f1' : 'var(--c-secondary-bg)',
+              background: filter === f.id ? pack.accent : 'var(--c-secondary-bg)',
               color: filter === f.id ? 'white' : 'var(--c-hint)',
             }}
           >
@@ -155,7 +155,7 @@ function ConnectorManager() {
               style={{
                 marginBottom: 0,
                 padding: '14px',
-                borderLeft: isEnabled ? '3px solid #6366f1' : 'none',
+                borderLeft: isEnabled ? `3px solid ${pack.accent}` : 'none',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>

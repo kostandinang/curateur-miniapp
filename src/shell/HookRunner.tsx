@@ -120,7 +120,7 @@ function HookRunner() {
 
         <div
           className="hero-banner"
-          style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+          style={{ background: pack.gradient }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div className="icon-box lg hero">
@@ -220,7 +220,7 @@ function HookRunner() {
     <div style={{ padding: '8px 0' }}>
       <div
         className="hero-banner"
-        style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', marginBottom: '20px' }}
+        style={{ background: pack.gradient, marginBottom: '20px' }}
       >
         <div className="icon-box lg hero" style={{ marginBottom: '12px' }}>
           <Puzzle size={24} />
@@ -266,7 +266,7 @@ function HookRunner() {
           >
             <div
               className="icon-box"
-              style={{ background: 'var(--c-bg)', color: '#6366f1', width: '40px', height: '40px', borderRadius: '10px' }}
+              style={{ background: 'var(--c-bg)', color: pack.accent, width: '40px', height: '40px', borderRadius: '10px' }}
             >
               <Puzzle size={20} />
             </div>
