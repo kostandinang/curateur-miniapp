@@ -1,10 +1,10 @@
 import { FileAudio, Mic, Pause, Play, RefreshCw, Search, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 import { MOCK_VOICE_NOTE } from '../../lib/mock-data'
 
 interface VoiceNote {
-  id: number
+  id: string
   filename: string
   timestamp: string
   duration: string
@@ -18,8 +18,9 @@ interface VoiceNotesApiResponse {
 
 function VoiceNotes() {
   const [notes, setNotes] = useState<VoiceNote[]>([])
-  const [playing, setPlaying] = useState<number | null>(null)
+  const [playing, setPlaying] = useState<string | null>(null)
   const [search, setSearch] = useState<string>('')
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [recording, setRecording] = useState<boolean>(false)
   const [recordingTime, setRecordingTime] = useState<number>(0)
@@ -92,9 +93,10 @@ function VoiceNotes() {
     if (recording) {
       setRecording(false)
       setRecordingTime(0)
+      const newFilename = `voice_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.mp3`
       const newNote: VoiceNote = {
-        id: Date.now(),
-        filename: `voice_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.mp3`,
+        id: newFilename,
+        filename: newFilename,
         timestamp: new Date().toISOString(),
         duration: formatTime(recordingTime),
         transcript: '🎙️ Recording in progress... Transcript will appear here.',
@@ -107,11 +109,25 @@ function VoiceNotes() {
     }
   }
 
-  const handlePlay = (id: number): void => {
-    setPlaying(playing === id ? null : id)
+  const handlePlay = (id: string, filename: string): void => {
+    if (playing === id) {
+      audioRef.current?.pause()
+      setPlaying(null)
+    } else {
+      if (audioRef.current) audioRef.current.pause()
+      const audio = new Audio(`/api/voice/${encodeURIComponent(filename)}`)
+      audio.onended = () => setPlaying(null)
+      audio.play()
+      audioRef.current = audio
+      setPlaying(id)
+    }
   }
 
-  const handleDelete = (id: number): void => {
+  const handleDelete = (id: string): void => {
+    if (playing === id) {
+      audioRef.current?.pause()
+      setPlaying(null)
+    }
     setNotes(notes.filter((n) => n.id !== id))
   }
 
@@ -204,7 +220,7 @@ function VoiceNotes() {
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
               <button
                 type="button"
-                onClick={() => handlePlay(note.id)}
+                onClick={() => handlePlay(note.id, note.filename)}
                 aria-label={playing === note.id ? 'Pause' : 'Play'}
                 style={{
                   width: '40px',

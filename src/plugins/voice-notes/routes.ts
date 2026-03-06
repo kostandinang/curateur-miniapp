@@ -1,6 +1,18 @@
 import { Hono } from 'hono'
+import { createReadStream } from 'node:fs'
 import path from 'node:path'
 import { WORKSPACE_DIR, fileExists, listDir, getFileStat } from '../../../api/lib/workspace'
+
+const AUDIO_MIME: Record<string, string> = {
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.wav': 'audio/wav',
+  '.m4a': 'audio/mp4',
+  '.webm': 'audio/webm',
+  '.opus': 'audio/ogg; codecs=opus',
+}
+
+const ALLOWED_EXTENSIONS = new Set(Object.keys(AUDIO_MIME))
 
 function getVoiceNotes() {
   const voiceDir = path.join(WORKSPACE_DIR, 'voice-notes')
@@ -9,7 +21,7 @@ function getVoiceNotes() {
 
     const files = listDir(voiceDir)
     const notes = files
-      .filter((f: string) => f.endsWith('.mp3') || f.endsWith('.ogg'))
+      .filter((f: string) => ALLOWED_EXTENSIONS.has(path.extname(f).toLowerCase()))
       .map((f: string) => {
         const stats = getFileStat(path.join(voiceDir, f))
         return {
@@ -54,6 +66,38 @@ router.get('/', (c) => {
 
 router.get('/stats', (c) => {
   return c.json(getVoiceStats())
+})
+
+router.get('/:filename', (c) => {
+  const filename = c.req.param('filename')
+
+  // Reject path traversal attempts
+  if (filename.includes('/') || filename.includes('..') || filename.includes('\0')) {
+    return c.json({ error: 'Invalid filename' }, 400)
+  }
+
+  const ext = path.extname(filename).toLowerCase()
+  if (!ALLOWED_EXTENSIONS.has(ext)) {
+    return c.json({ error: 'Unsupported file type' }, 400)
+  }
+
+  const filePath = path.join(WORKSPACE_DIR, 'voice-notes', filename)
+  if (!fileExists(filePath)) {
+    return c.json({ error: 'File not found' }, 404)
+  }
+
+  const stats = getFileStat(filePath)
+  const contentType = AUDIO_MIME[ext] || 'audio/octet-stream'
+  const stream = createReadStream(filePath)
+
+  return new Response(stream as unknown as ReadableStream, {
+    headers: {
+      'Content-Type': contentType,
+      'Content-Length': stats ? String(stats.size) : '',
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': 'no-cache',
+    },
+  })
 })
 
 export default router

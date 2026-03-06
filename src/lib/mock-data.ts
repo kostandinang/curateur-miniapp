@@ -38,7 +38,7 @@ export const MOCK_JOB_STATS = {
 }
 
 export const MOCK_VOICE_NOTE = {
-  id: 1,
+  id: 'voice_2026-03-04.mp3',
   filename: 'voice_2026-03-04.mp3',
   timestamp: new Date().toISOString(),
   duration: '0:45',
