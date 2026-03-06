@@ -226,8 +226,8 @@ function SessionStatus() {
 
         {/* Active Sessions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {oc.sessions.active.slice(0, 3).map((session, idx) => (
-            <div key={idx} style={{
+          {oc.sessions.active.slice(0, 3).map((session) => (
+            <div key={session.id} style={{
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
