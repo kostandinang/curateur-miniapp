@@ -78,8 +78,6 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
           msOverflowStyle: 'none',
         }}
       >
-        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-
         <div style={{ display: 'flex', gap: '8px', width: 'max-content', minWidth: '100%' }}>
           {visibleViews.map((plugin) => {
             const Icon = getIcon(plugin.icon)

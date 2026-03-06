@@ -378,6 +378,9 @@
   margin-bottom: 12px;
 }
 
+/* Hide scrollbars on scroll containers */
+div::-webkit-scrollbar { display: none; }
+
 /* Hero Banner - gradient header cards used across views */
 .hero-banner {
   border-radius: 20px;
