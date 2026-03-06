@@ -4,7 +4,6 @@ import { useNamingPack } from '../hooks/useNamingPack'
 import { useSettings } from '../hooks/useSettings'
 import { views } from '../plugins/registry'
 import type { ViewPlugin } from '../plugins/schema'
-import Loader from './Loader'
 import Settings from './Settings'
 import WidgetErrorBoundary from './WidgetErrorBoundary'
 
@@ -34,7 +33,7 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
   if (!loaded) {
     return (
       <div className="empty">
-        <Loader label="Loading..." />
+        <div className="spinner">Loading...</div>
       </div>
     )
   }
@@ -176,7 +175,7 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
           <Suspense
             fallback={
               <div className="empty">
-                <Loader />
+                <div className="spinner">Loading...</div>
               </div>
             }
           >

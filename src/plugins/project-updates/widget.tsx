@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronUp, FolderKanban, Play, Video } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
-import Loader from '../../shell/Loader'
 
 interface LoomData {
   title: string
@@ -85,7 +84,7 @@ function ProjectUpdates() {
   if (loading) {
     return (
       <div className="empty">
-        <Loader />
+        <FolderKanban size={24} className="spinner" />
       </div>
     )
   }

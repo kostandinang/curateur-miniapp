@@ -1,7 +1,6 @@
 import { FileAudio, Mic, Pause, Play, RefreshCw, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
-import Loader from '../../shell/Loader'
 
 interface VoiceNote {
   id: number
@@ -128,7 +127,7 @@ function VoiceNotes() {
   if (loading) {
     return (
       <div className="empty">
-        <Loader />
+        <Mic size={24} className="spinner" />
       </div>
     )
   }
@@ -322,7 +321,10 @@ function VoiceNotes() {
         className="btn btn-secondary"
         style={{ marginTop: '16px' }}
       >
-        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={16} />}
+        <RefreshCw
+          size={16}
+          style={{ marginRight: '8px', animation: loading ? 'spin 1s linear infinite' : 'none' }}
+        />
         Refresh
       </button>
     </>

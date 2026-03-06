@@ -2,7 +2,6 @@ import { Calendar, CheckCircle2, Clock, Flame, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
 import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
-import Loader from '../../shell/Loader'
 
 interface HistoryEntry {
   date: string
@@ -104,7 +103,7 @@ function OMADTracker() {
   if (loading) {
     return (
       <div className="empty">
-        <Loader />
+        <Flame size={24} className="spinner" />
       </div>
     )
   }
@@ -298,8 +297,11 @@ function OMADTracker() {
         className="btn btn-secondary"
         style={{ marginTop: '8px' }}
       >
-        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={16} />}
-        Refresh
+        <RefreshCw
+          size={16}
+          style={{ marginRight: '8px', animation: loading ? 'spin 1s linear infinite' : 'none' }}
+        />
+        Refresh Data
       </button>
     </>
   )

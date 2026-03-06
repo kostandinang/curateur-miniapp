@@ -1,7 +1,6 @@
 import { Activity, Brain, Cpu, Layers, RefreshCw, Server, Shield, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../../lib/api'
-import Loader from '../../shell/Loader'
 
 interface OpenClawSession {
   id: string
@@ -86,7 +85,7 @@ function SessionStatus() {
   if (loading) {
     return (
       <div className="empty">
-        <Loader />
+        <Activity size={24} className="spinner" style={{ marginBottom: '12px' }} />
         <div>Checking status...</div>
       </div>
     )
@@ -379,7 +378,10 @@ function SessionStatus() {
         onClick={fetchStatus}
         disabled={loading}
       >
-        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={16} />}
+        <RefreshCw
+          size={16}
+          style={{ marginRight: '8px', animation: loading ? 'spin 1s linear infinite' : 'none' }}
+        />
         Refresh
       </button>
     </>

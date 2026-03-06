@@ -2,7 +2,6 @@ import { type ChangeEvent, useEffect, useState } from 'react'
 import { Clock, Calendar, Check, AlertCircle, RotateCcw, Save, Sun, Moon, Briefcase, TrendingUp, BookOpen, Flame, DollarSign, FolderKanban } from 'lucide-react'
 import { apiFetch } from '../../lib/api'
 import { formatUtcToLocal, getTimezoneAbbr } from '../../lib/time-utils'
-import Loader from '../../shell/Loader'
 
 interface AgentConfig {
   id: string
@@ -226,7 +225,7 @@ function CronManager() {
   if (loading) {
     return (
       <div className="empty">
-        <Loader />
+        <Clock size={24} className="spinner" />
       </div>
     )
   }
@@ -429,7 +428,7 @@ function CronManager() {
             gap: '8px'
           }}
         >
-          {saved ? <Check size={18} /> : saving ? <Loader variant="arc" size="sm" /> : <Save size={18} />}
+          {saved ? <Check size={18} /> : saving ? <Clock size={18} className="spinner" /> : <Save size={18} />}
           {saved ? 'Saved!' : saving ? 'Saving...' : 'Save Changes'}
         </button>
 

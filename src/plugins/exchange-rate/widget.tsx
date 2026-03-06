@@ -1,6 +1,5 @@
 import { ArrowUpRight, Bell, RefreshCw, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import Loader from '../../shell/Loader'
 
 const EXCHANGE_API_URL = 'https://open.er-api.com/v6/latest/USD'
 const DEFAULT_THRESHOLD = 83
@@ -51,7 +50,7 @@ function ExchangeRate() {
 
         {loading ? (
           <div style={{ padding: '20px' }}>
-            <Loader />
+            <RefreshCw size={32} className="spinner" style={{ opacity: 0.7 }} />
           </div>
         ) : error ? (
           <div style={{ fontSize: '16px', opacity: 0.8 }}>{error}</div>
@@ -143,7 +142,13 @@ function ExchangeRate() {
         className="btn"
         style={{ marginTop: '16px' }}
       >
-        {loading ? <Loader variant="arc" size="sm" /> : <RefreshCw size={18} />}
+        <RefreshCw
+          size={18}
+          style={{
+            marginRight: '8px',
+            animation: loading ? 'spin 1s linear infinite' : 'none',
+          }}
+        />
         {loading ? 'Updating...' : 'Refresh Rate'}
       </button>
     </>
