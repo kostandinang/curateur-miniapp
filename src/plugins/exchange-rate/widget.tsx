@@ -29,22 +29,8 @@ function ExchangeRate() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      setLoading(true)
-      try {
-        const res = await fetch('https://open.er-api.com/v6/latest/USD')
-        const data: ExchangeRateApiResponse = await res.json()
-        setRate(data.rates.ALL)
-        setLastUpdate(data.time_last_update_utc)
-        setError(null)
-      } catch (_err) {
-        setError('Failed to fetch')
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
-    const interval = setInterval(doFetch, 5 * 60 * 1000)
+    fetchRate()
+    const interval = setInterval(fetchRate, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
 

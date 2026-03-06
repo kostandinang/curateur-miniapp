@@ -8,7 +8,6 @@ export function useNamingPack(): { pack: NamingPack; setPack: (id: number) => vo
   const [pack, setPackState] = useState<NamingPack>(getNamingPack(0))
 
   useEffect(() => {
-    // Try server config first
     apiFetch('/api/config')
       .then(r => r.json())
       .then(config => {
@@ -17,7 +16,6 @@ export function useNamingPack(): { pack: NamingPack; setPack: (id: number) => vo
         }
       })
       .catch(() => {
-        // Fall back to localStorage
         try {
           const saved = localStorage.getItem(STORAGE_KEY)
           if (saved) setPackState(getNamingPack(parseInt(saved, 10)))
@@ -26,19 +24,26 @@ export function useNamingPack(): { pack: NamingPack; setPack: (id: number) => vo
   }, [])
 
   const setPack = (id: number) => {
+    const previous = pack
+    // Optimistic update
     setPackState(getNamingPack(id))
     localStorage.setItem(STORAGE_KEY, String(id))
-    // Also persist to server
+
+    // Persist to server — revert on failure
     apiFetch('/api/config')
       .then(r => r.json())
-      .then(config => {
+      .then(config =>
         apiFetch('/api/config', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...config, namingPack: id }),
-        }).catch(() => {})
+        })
+      )
+      .catch((err) => {
+        console.error('Failed to save naming pack:', err)
+        setPackState(previous)
+        localStorage.setItem(STORAGE_KEY, String(previous.id))
       })
-      .catch(() => {})
   }
 
   return { pack, setPack }

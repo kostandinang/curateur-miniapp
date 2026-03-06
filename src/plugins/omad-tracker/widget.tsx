@@ -68,47 +68,9 @@ function OMADTracker() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/omad')
-        if (!res.ok) throw new Error('Failed to fetch')
-        const omadData: OMADData = await res.json()
-        setData(omadData)
-        setError(null)
-      } catch (err) {
-        setError((err as Error).message)
-        const startDate = new Date('2026-02-01')
-        const today = new Date()
-        const daysDiff =
-          Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
-
-        const last7Days: HistoryEntry[] = []
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date()
-          d.setDate(d.getDate() - i)
-          last7Days.push({
-            date: d.toISOString().split('T')[0],
-            dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
-            dayNum: d.getDate(),
-            completed: i > 0,
-            isToday: i === 0,
-          })
-        }
-
-        setData({
-          streak: daysDiff,
-          totalEntries: daysDiff,
-          history: last7Days,
-          lastEntry: null,
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchData()
     // Refresh every 5 minutes
-    const interval = setInterval(doFetch, 5 * 60 * 1000)
+    const interval = setInterval(fetchData, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
 

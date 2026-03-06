@@ -9,17 +9,16 @@ import './App.css'
 
 const SessionStatus = lazy(() => import('./plugins/session-status/widget'))
 
-// Load secret from env or config at runtime
-const getSecretKey = (): string => {
-  // Try Vite env var first (for build-time injection)
-  if (import.meta.env.VITE_SECRET_KEY) {
-    return import.meta.env.VITE_SECRET_KEY as string
-  }
-  // Fall back to session-stored value or prompt user
-  return ''
+const SECRET_KEY = (import.meta.env.VITE_SECRET_KEY as string) || ''
+
+// Hash-based session token instead of plain boolean
+async function hashKey(key: string): Promise<string> {
+  const data = new TextEncoder().encode(key + ':curateur-session')
+  const hash = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
-const SECRET_KEY = getSecretKey()
+const SESSION_KEY = 'miniapp_auth_token'
 
 type TabType = 'widgets' | 'status' | 'tools'
 
@@ -103,18 +102,37 @@ function App() {
       return
     }
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const key = urlParams.get('key')
-    // Allow access if: 1) valid key provided, 2) already authenticated in session, 3) running in Telegram WebApp context
-    if ((key && key === SECRET_KEY && SECRET_KEY !== '') || sessionStorage.getItem('miniapp_auth') === 'true') {
-      setIsAuthorized(true)
-      if (key && key === SECRET_KEY) sessionStorage.setItem('miniapp_auth', 'true')
+    // Browser auth: validate key from URL or verify stored session token
+    const checkAuth = async () => {
+      const urlParams = new URLSearchParams(window.location.search)
+      const key = urlParams.get('key')
+
+      if (key && key === SECRET_KEY && SECRET_KEY !== '') {
+        const token = await hashKey(key)
+        sessionStorage.setItem(SESSION_KEY, token)
+        setIsAuthorized(true)
+        setIsLoading(false)
+        return
+      }
+
+      // Verify stored session token matches the expected hash
+      if (SECRET_KEY) {
+        const stored = sessionStorage.getItem(SESSION_KEY)
+        if (stored) {
+          const expected = await hashKey(SECRET_KEY)
+          if (stored === expected) {
+            setIsAuthorized(true)
+            setIsLoading(false)
+            return
+          }
+        }
+      }
+
+      setIsAuthorized(false)
       setIsLoading(false)
-      return
     }
 
-    setIsAuthorized(false)
-    setIsLoading(false)
+    checkAuth()
   }, [])
 
   // Keyboard shortcut to open command palette (Cmd+K or Ctrl+K)
@@ -129,13 +147,14 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  const handleUnlock = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUnlock = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const input = formData.get('key') as string
     if (SECRET_KEY && input === SECRET_KEY) {
-      sessionStorage.setItem('miniapp_auth', 'true')
-      window.location.search = `?key=${SECRET_KEY}`
+      const token = await hashKey(input)
+      sessionStorage.setItem(SESSION_KEY, token)
+      setIsAuthorized(true)
     } else {
       alert('Invalid key')
     }
@@ -173,7 +192,7 @@ function App() {
               message: `/${action}`,
               chat_id: tg?.initDataUnsafe?.user?.id || '',
             }),
-          }).catch(() => {})
+          }).catch((err) => console.error('Failed to send agent command:', err))
           break
         case 'setting':
           if (action === 'theme') {

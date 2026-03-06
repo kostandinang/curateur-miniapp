@@ -92,37 +92,8 @@ function SystemMonitor() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/system')
-        if (!res.ok) throw new Error('Failed')
-        const data: SystemStats = await res.json()
-        setStats(data)
-        setLastUpdate(new Date())
-      } catch (err) {
-        console.error('Error fetching system stats:', err)
-        setStats({
-          timestamp: new Date().toISOString(),
-          cpu: { usage: 23.5 },
-          memory: { total: 4096, used: 2048, percent: 50 },
-          disk: { total: '50G', used: '25G', available: '25G', percent: 50 },
-          network: { interface: 'eth0', rx: '1.2GB', tx: '500MB' },
-          load: { load1: '0.45' },
-          uptime: { days: 15, hours: 3, minutes: 42 },
-          processes: 142,
-          topProcesses: [
-            { pid: 1234, user: 'root', cpu: 5.2, mem: 3.1, command: 'node' },
-            { pid: 5678, user: 'root', cpu: 2.1, mem: 2.5, command: 'nginx' },
-            { pid: 9012, user: 'root', cpu: 1.8, mem: 1.9, command: 'python3' },
-          ],
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
-    const interval = setInterval(doFetch, 5000) // Refresh every 5 seconds
+    fetchStats()
+    const interval = setInterval(fetchStats, 5000) // Refresh every 5 seconds
     return () => clearInterval(interval)
   }, [])
 

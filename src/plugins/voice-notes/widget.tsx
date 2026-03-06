@@ -62,42 +62,7 @@ function VoiceNotes() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/voice')
-        if (!res.ok) throw new Error('Failed')
-        const data: VoiceNotesApiResponse = await res.json()
-
-        const notesWithTranscripts: VoiceNote[] = (data.notes || []).map((note, i) => ({
-          ...note,
-          transcript:
-            i === 0
-              ? 'Meeting notes from the project discussion. We need to finish the dashboard by Friday.'
-              : i === 1
-                ? 'Grocery list: milk, eggs, bread, coffee, and vegetables for dinner.'
-                : i === 2
-                  ? 'Quick reminder to call mom tomorrow about weekend plans.'
-                  : 'Voice note recording.',
-        }))
-
-        setNotes(notesWithTranscripts)
-      } catch (err) {
-        console.error('Error fetching voice notes:', err)
-        setNotes([
-          {
-            id: 1,
-            filename: 'voice_2026-03-04.mp3',
-            timestamp: new Date().toISOString(),
-            duration: '0:45',
-            transcript: 'Demo voice note.',
-          },
-        ])
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchNotes()
   }, [])
 
   // Recording timer

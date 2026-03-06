@@ -35,25 +35,25 @@
   - `api/lib/skill-loader.test.ts` (4 tests) — dynamic manifest loading, type filtering, missing directory
 - Extracted `sanitizeInput` to `api/lib/sanitize.ts` and `loadAllowedSkillIds` to `api/lib/skill-loader.ts` for testability
 
-### 5. Silent error swallowing
-- **Files:** `src/App.tsx:175`, `src/hooks/useNamingPack.ts:38-40`
-- **Problem:** Empty `.catch(() => {})` blocks hide failures from users and developers.
-- **Fix:** Log errors to console at minimum. For user-facing operations (command palette agent dispatch), show a toast or inline error.
+### 5. Silent error swallowing (DONE)
+- **Files:** `src/App.tsx`, `src/hooks/useNamingPack.ts`
+- **Problem:** Empty `.catch(() => {})` blocks hid failures.
+- **Fix:** Added `console.error` with descriptive messages in App.tsx and useNamingPack.ts.
 
-### 6. Duplicated fetch logic in widgets
-- **Files:** `src/plugins/exchange-rate/widget.tsx`, `src/plugins/system-monitor/widget.tsx`, `src/plugins/voice-notes/widget.tsx` (and others)
-- **Problem:** Each widget defines a `fetchData()` function AND duplicates the same logic inside `useEffect`. The useEffect body should just call the function.
-- **Fix:** Remove duplicated fetch logic from useEffect, call the named function instead.
+### 6. Duplicated fetch logic in widgets (DONE)
+- **Files:** 9 widget files under `src/plugins/`
+- **Problem:** Each widget duplicated fetch logic inside useEffect instead of calling the named function.
+- **Fix:** Replaced all `doFetch` bodies with calls to the existing named function (fetchRate, fetchStats, fetchNotes, etc.).
 
-### 7. sessionStorage auth bypass
-- **File:** `src/App.tsx:108`
-- **Problem:** Frontend auth check trusts `sessionStorage.getItem('miniapp_auth') === 'true'` which anyone can set via browser console. Backend auth (fix #1) mitigates API access, but the UI is still bypassable.
-- **Fix:** Store a signed token or hash in sessionStorage instead of a plain boolean. Validate it against the secret key on load.
+### 7. sessionStorage auth bypass (DONE)
+- **File:** `src/App.tsx`
+- **Problem:** Frontend stored `miniapp_auth=true` in sessionStorage — trivially spoofable.
+- **Fix:** Now stores SHA-256 hash of secret key + salt. On load, re-hashes the key and compares. Also removed URL redirect on unlock (no longer leaks key in URL).
 
-### 8. Race condition in naming pack sync
-- **File:** `src/hooks/useNamingPack.ts:27-41`
-- **Problem:** `setPack` fires a server POST without awaiting the response, then immediately updates local state. If the server write fails, local and server state diverge.
-- **Fix:** Use optimistic update pattern — update local immediately but revert if server POST fails. Or await the POST before confirming.
+### 8. Race condition in naming pack sync (DONE)
+- **File:** `src/hooks/useNamingPack.ts`
+- **Problem:** `setPack` fired server POST without awaiting, causing potential state divergence on failure.
+- **Fix:** Optimistic update with revert — updates UI immediately, saves previous state, reverts both React state and localStorage if server POST fails.
 
 ---
 
@@ -87,5 +87,5 @@
 | Phase 1 (done) | #1 Auth middleware | ~30 min |
 | Phase 2 (done) | #2 Input validation, #3 MCP persistence | ~1 hr |
 | Phase 3 (done) | #4 Vitest setup + 30 tests | ~1 hr |
-| Phase 4 | #5-8 Code quality fixes | ~2 hr |
+| Phase 4 (done) | #5-8 Code quality fixes | ~2 hr |
 | Phase 5 | #9-12 Polish | ~2 hr |

@@ -97,66 +97,7 @@ function CostHeatmap() {
   }
 
   useEffect(() => {
-    const genMock = (): void => {
-      const mockData: UsageDay[] = []
-      const now = new Date()
-      let total = 0
-      let peak = 0
-
-      for (let i = 29; i >= 0; i--) {
-        const date = new Date(now)
-        date.setDate(date.getDate() - i)
-        const dayOfWeek: number = date.getDay()
-        const isWeekend: boolean = dayOfWeek === 0 || dayOfWeek === 6
-        const baseCost: number = isWeekend ? 0.5 : 2.5
-        const randomFactor: number = Math.random() * 3
-        const spike: number = Math.random() > 0.85 ? 5 : 0
-        const cost: number = Math.max(0.1, baseCost + randomFactor + spike)
-        const roundedCost: number = Math.round(cost * 100) / 100
-        total += roundedCost
-        peak = Math.max(peak, roundedCost)
-        mockData.push({
-          date: date.toISOString().split('T')[0],
-          dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-          dayNum: date.getDate(),
-          cost: roundedCost,
-          tokens: Math.round(roundedCost * 1500),
-          intensity: Math.min(1, roundedCost / 8),
-          source: 'mixed',
-        })
-      }
-
-      setUsageData(mockData)
-      setStats({
-        total: Math.round(total * 100) / 100,
-        daily: Math.round((total / 30) * 100) / 100,
-        peak,
-      })
-    }
-
-    const doFetch = async (): Promise<void> => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const res = await apiFetch('/api/costs')
-        if (!res.ok) throw new Error('API not available')
-        const data: CostApiResponse = await res.json()
-
-        if (data.usage && data.usage.length > 0) {
-          setUsageData(data.usage)
-          setStats(data.stats)
-        } else {
-          throw new Error('No data')
-        }
-      } catch (_err) {
-        console.log('Using fallback cost data')
-        genMock()
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchCostData()
   }, [])
 
   const getColorForIntensity = (intensity: number): string => {

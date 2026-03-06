@@ -31,7 +31,7 @@ function ProjectUpdates() {
   const [expandedProject, setExpandedProject] = useState<string | number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
-  const _fetchData = async (): Promise<void> => {
+  const fetchData = async (): Promise<void> => {
     try {
       setLoading(true)
       const res = await apiFetch('/api/projects')
@@ -51,24 +51,7 @@ function ProjectUpdates() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/projects')
-        if (!res.ok) throw new Error('Failed to fetch')
-        const data: ProjectsApiResponse = await res.json()
-        setProjects(data.projects || [])
-        if (data.projects?.length > 0) {
-          setExpandedProject(data.projects[0].id)
-        }
-      } catch (err) {
-        console.error('Error fetching projects:', err)
-        setProjects([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchData()
   }, [])
 
   const toggleProject = (id: string | number): void => {

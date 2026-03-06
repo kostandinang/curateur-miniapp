@@ -128,50 +128,7 @@ function Wellbeing() {
     const hour: number = new Date().getHours()
     setTimeOfDay(hour < 12 ? 'morning' : 'evening')
 
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/wellbeing')
-        if (!res.ok) throw new Error('Failed to fetch')
-        const data: WellbeingApiResponse = await res.json()
-
-        const entriesList: WellbeingEntry[] = data.entries || []
-        setEntries(entriesList)
-
-        const total: number = entriesList.length
-        const avg: number | string =
-          total > 0 ? (entriesList.reduce((a, b) => a + (b.mood || 0), 0) / total).toFixed(1) : 0
-
-        let streak = 0
-        const today: string = new Date().toISOString().split('T')[0]
-        const sorted = [...entriesList].sort(
-          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-        )
-
-        const getPrevDate = (daysAgo: number): string => {
-          const d = new Date()
-          d.setDate(d.getDate() - daysAgo)
-          return d.toISOString().split('T')[0]
-        }
-
-        for (const entry of sorted) {
-          const entryDate: string | undefined = entry.timestamp?.split('T')[0]
-          if (entryDate === today || (streak > 0 && entryDate === getPrevDate(streak))) {
-            streak++
-          } else {
-            break
-          }
-        }
-
-        setStats({ streak, avg, total })
-      } catch (err) {
-        console.error('Error fetching wellbeing:', err)
-        setStats({ streak: 12, avg: 3.8, total: 47 })
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchData()
   }, [])
 
   const handleMoodSelect = (mood: MoodOption): void => {

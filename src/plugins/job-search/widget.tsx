@@ -100,61 +100,7 @@ function JobSearch() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const res = await apiFetch('/api/jobs')
-        if (!res.ok) throw new Error('API not available')
-        const data: JobsApiResponse = await res.json()
-
-        if (data.jobs && data.jobs.length > 0) {
-          setJobs(data.jobs)
-          setStats(data.stats || {})
-        } else {
-          throw new Error('No jobs found')
-        }
-      } catch (_err) {
-        console.log('Using fallback job data')
-        setJobs([
-          {
-            id: 'job-001',
-            company: 'N26',
-            title: 'Senior Full Stack Engineer',
-            location: 'Berlin, Germany',
-            remote: 'Hybrid',
-            salary: '€85,000 - €110,000',
-            skills: ['Node.js', 'React', 'TypeScript'],
-            url: 'https://n26.com/careers',
-            posted: '2026-03-04',
-            status: 'active',
-            source: 'hiring.cafe',
-          },
-          {
-            id: 'job-002',
-            company: 'Contentful',
-            title: 'Staff Full Stack Engineer',
-            location: 'Berlin, Germany',
-            remote: 'Remote EU',
-            salary: '€95,000 - €130,000',
-            skills: ['Node.js', 'React', 'GraphQL'],
-            url: 'https://contentful.com/careers',
-            posted: '2026-03-03',
-            status: 'active',
-            source: 'hiring.cafe',
-          },
-        ])
-        setStats({
-          total: 2,
-          active: 2,
-          applied: 0,
-          berlin: 2,
-          remoteEU: 1,
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchJobs()
   }, [])
 
   const filteredJobs: Job[] = jobs

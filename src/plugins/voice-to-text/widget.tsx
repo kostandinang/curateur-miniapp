@@ -65,50 +65,9 @@ function VoiceToText() {
   }
 
   useEffect(() => {
-    const doFetch = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const [transcriptsRes, statsRes] = await Promise.all([
-          apiFetch('/api/voice-transcripts'),
-          apiFetch('/api/voice-stats'),
-        ])
-
-        if (transcriptsRes.ok) {
-          const data: Transcript[] = await transcriptsRes.json()
-          setTranscripts(data || [])
-        }
-
-        if (statsRes.ok) {
-          const statsData: VoiceStats = await statsRes.json()
-          setStats(statsData || { total: 0, today: 0 })
-        }
-      } catch (err) {
-        console.error('Error fetching transcripts:', err)
-        setTranscripts([
-          {
-            id: 'voice_2026-03-04_23-30-00',
-            timestamp: '2026-03-04T23:30:00Z',
-            transcript:
-              'Hey, just wanted to check in about the project. Let me know when you have a chance to review the updates.',
-            duration: 8,
-            status: 'transcribed',
-          },
-          {
-            id: 'voice_2026-03-04_22-15-00',
-            timestamp: '2026-03-04T22:15:00Z',
-            transcript: 'Reminder to log my OMAD for today. Everything went well, no challenges.',
-            duration: 5,
-            status: 'transcribed',
-          },
-        ])
-        setStats({ total: 12, today: 3 })
-      } finally {
-        setLoading(false)
-      }
-    }
-    doFetch()
+    fetchData()
     // Auto-refresh every 30 seconds
-    const interval = setInterval(doFetch, 30000)
+    const interval = setInterval(fetchData, 30000)
     return () => clearInterval(interval)
   }, [])
 
