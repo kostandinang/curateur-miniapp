@@ -13,15 +13,15 @@
 - **Fix:** Telegram initData HMAC-SHA256 validation + Bearer token fallback. Created `apiFetch` wrapper used by all frontend API calls.
 - **Commit:** Pending
 
-### 2. Input validation on `/api/skill/:id/execute`
-- **File:** `api/server.ts:66-95`
+### 2. Input validation on `/api/skill/:id/execute` (DONE)
+- **Files:** `api/server.ts`
 - **Problem:** User input passed directly to shell execution via Telegram. `skillId` comes from URL param, `inputs` from POST body — neither validated.
-- **Fix:** Allowlist skill IDs against the action registry. Sanitize input values (strip shell metacharacters). Reject unknown skill IDs with 404.
+- **Fix:** Allowlist skill IDs against the action registry. `sanitizeInput()` strips shell metacharacters and limits length. `/api/message` also validated and sanitized.
 
-### 3. MCP config endpoint doesn't persist
-- **File:** `api/server.ts:137-146`
-- **Problem:** `POST /api/mcp/:id/config` returns a fake success without writing to `~/.openclaw/openclaw.json`. TapManager toggles are cosmetic only.
-- **Fix:** Read openclaw.json (JSON5), toggle the `disabled` flag on the target server, write back. Use `json5` package already in dependencies.
+### 3. MCP config endpoint doesn't persist (DONE)
+- **Files:** `api/server.ts`
+- **Problem:** `POST /api/mcp/:id/config` returned fake success without writing to `~/.openclaw/openclaw.json`. TapManager toggles were cosmetic only.
+- **Fix:** Reads openclaw.json via JSON5, toggles `disabled` flag on target server, writes back. Validates server exists in config before modifying.
 
 ---
 
@@ -85,7 +85,7 @@
 | Phase | Items | Effort |
 |-------|-------|--------|
 | Phase 1 (done) | #1 Auth middleware | ~30 min |
-| Phase 2 | #2 Input validation, #3 MCP persistence | ~1 hr |
+| Phase 2 (done) | #2 Input validation, #3 MCP persistence | ~1 hr |
 | Phase 3 | #4 Vitest setup + auth tests | ~1 hr |
 | Phase 4 | #5-8 Code quality fixes | ~2 hr |
 | Phase 5 | #9-12 Polish | ~2 hr |

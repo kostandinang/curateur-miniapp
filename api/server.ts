@@ -1,12 +1,29 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import JSON5 from 'json5'
 
 import { corsMiddleware } from './middleware/cors'
 import { authMiddleware } from './middleware/auth'
 import { hasBotToken, sendTelegramMessage } from './lib/telegram'
 import { WORKSPACE_DIR, fileExists, readJsonFile } from './lib/workspace'
+
+// Action allowlist — built from plugin manifests
+const ALLOWED_SKILL_IDS = new Set([
+  'new-session', 'reset-session', 'loom-transcript',
+  'search-memory', 'system-status',
+])
+
+// Sanitize user input: strip shell metacharacters, limit length
+function sanitizeInput(value: string): string {
+  return value
+    .replace(/[;&|`$(){}[\]!#<>\\]/g, '')
+    .slice(0, 500)
+    .trim()
+}
+
+const OPENCLAW_CONFIG_PATH = process.env.OPENCLAW_CONFIG_PATH || '/root/.openclaw/openclaw.json'
 
 // Plugin routes
 import systemMonitorRoutes from '../src/plugins/system-monitor/routes'
@@ -66,6 +83,10 @@ app.get('/api/health', (c) => {
 app.post('/api/skill/:id/execute', async (c) => {
   const skillId = c.req.param('id')
 
+  if (!ALLOWED_SKILL_IDS.has(skillId)) {
+    return c.json({ error: `Unknown skill: ${skillId}` }, 404)
+  }
+
   if (!hasBotToken()) {
     return c.json({ error: 'Bot token not configured' }, 500)
   }
@@ -78,9 +99,9 @@ app.post('/api/skill/:id/execute', async (c) => {
   try {
     const body = await c.req.json<{ inputs?: Record<string, string> }>()
 
-    // Build command from skill ID and optional inputs
+    // Build command from skill ID and sanitized inputs
     const inputStr = body.inputs
-      ? Object.values(body.inputs).filter(Boolean).join(' ')
+      ? Object.values(body.inputs).map(sanitizeInput).filter(Boolean).join(' ')
       : ''
     const command = `/${skillId}${inputStr ? ` ${inputStr}` : ''}`
 
@@ -102,15 +123,24 @@ app.post('/api/message', async (c) => {
 
   try {
     const { message, chat_id } = await c.req.json<{ message: string; chat_id?: string }>()
-    const targetChatId = chat_id || process.env.DEFAULT_CHAT_ID
 
+    if (!message || typeof message !== 'string') {
+      return c.json({ error: 'Message is required' }, 400)
+    }
+
+    const sanitized = sanitizeInput(message)
+    if (!sanitized) {
+      return c.json({ error: 'Message is empty after sanitization' }, 400)
+    }
+
+    const targetChatId = chat_id || process.env.DEFAULT_CHAT_ID
     if (!targetChatId) {
       return c.json({ error: 'Chat ID not provided' }, 400)
     }
 
-    const result = await sendTelegramMessage(targetChatId, message)
+    const result = await sendTelegramMessage(targetChatId, sanitized)
     if (result.ok) {
-      return c.json({ success: true, message: `Sent: ${message}` })
+      return c.json({ success: true, message: `Sent: ${sanitized}` })
     }
     return c.json({ error: `Telegram API error: ${result.description}` }, 500)
   } catch {
@@ -120,11 +150,10 @@ app.post('/api/message', async (c) => {
 
 // MCP config endpoints
 app.get('/api/mcp', async (c) => {
-  // Read current MCP server configs from openclaw.json
-  const configPath = '/root/.openclaw/openclaw.json'
   try {
-    if (fileExists(configPath)) {
-      const config = JSON.parse(readFileSync(configPath, 'utf8'))
+    if (fileExists(OPENCLAW_CONFIG_PATH)) {
+      const raw = readFileSync(OPENCLAW_CONFIG_PATH, 'utf8')
+      const config = JSON5.parse(raw)
       const mcpServers = config.mcpServers || {}
       return c.json({ servers: mcpServers })
     }
@@ -137,11 +166,30 @@ app.get('/api/mcp', async (c) => {
 app.post('/api/mcp/:id/config', async (c) => {
   const serverId = c.req.param('id')
   try {
-    const body = await c.req.json<Record<string, unknown>>()
-    // For now, return the config as-is (write support can be added later)
-    return c.json({ id: serverId, config: body, saved: true })
+    const body = await c.req.json<{ enabled: boolean }>()
+
+    if (!fileExists(OPENCLAW_CONFIG_PATH)) {
+      return c.json({ error: 'OpenClaw config not found' }, 404)
+    }
+
+    const raw = readFileSync(OPENCLAW_CONFIG_PATH, 'utf8')
+    const config = JSON5.parse(raw)
+
+    if (!config.mcpServers?.[serverId]) {
+      return c.json({ error: `MCP server '${serverId}' not found in config` }, 404)
+    }
+
+    // Toggle the disabled flag (OpenClaw uses disabled: true to turn off)
+    if (body.enabled) {
+      delete config.mcpServers[serverId].disabled
+    } else {
+      config.mcpServers[serverId].disabled = true
+    }
+
+    writeFileSync(OPENCLAW_CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8')
+    return c.json({ id: serverId, enabled: body.enabled, saved: true })
   } catch {
-    return c.json({ error: 'Invalid JSON' }, 400)
+    return c.json({ error: 'Failed to update MCP config' }, 500)
   }
 })
 
