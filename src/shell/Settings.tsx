@@ -1,12 +1,7 @@
-import { Box, Eye, EyeOff, RotateCcw, Settings as SettingsIcon } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { Eye, EyeOff, RotateCcw, Settings as SettingsIcon } from 'lucide-react'
+import { getIcon } from '../lib/icons'
 import { NAMING_PACKS, type NamingPack } from '../plugins/naming-packs'
 import type { ViewPlugin } from '../plugins/schema'
-
-function getIcon(iconName: string): LucideIcon {
-  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
-}
 
 interface SettingsProps {
   views: ViewPlugin[]

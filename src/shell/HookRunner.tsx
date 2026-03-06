@@ -1,17 +1,12 @@
-import { AlertCircle, ArrowLeft, Box, CheckCircle2, Play, Puzzle } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { AlertCircle, ArrowLeft, CheckCircle2, Play, Puzzle } from 'lucide-react'
 import { useState } from 'react'
 import { apiFetch } from '../lib/api'
+import { getIcon } from '../lib/icons'
 import { useNamingPack } from '../hooks/useNamingPack'
 import type { TelegramWindow } from '../types/telegram'
 import { actions, connectors } from '../plugins/registry'
 import type { ActionPlugin, SkillInput } from '../plugins/schema'
 import TapManager from './TapManager'
-
-function getIcon(iconName: string): LucideIcon {
-  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
-}
 
 interface SkillResult {
   success: boolean

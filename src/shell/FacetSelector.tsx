@@ -1,17 +1,12 @@
-import { Box, Settings as SettingsIcon } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { Settings as SettingsIcon } from 'lucide-react'
 import { type ComponentType, Suspense, lazy, useState } from 'react'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { useSettings } from '../hooks/useSettings'
+import { getIcon } from '../lib/icons'
 import { views } from '../plugins/registry'
 import type { ViewPlugin } from '../plugins/schema'
 import Settings from './Settings'
 import WidgetErrorBoundary from './WidgetErrorBoundary'
-
-function getIcon(iconName: string): LucideIcon {
-  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
-}
 
 const widgetCache = new Map<string, ComponentType>()
 function getWidgetComponent(plugin: ViewPlugin): ComponentType {

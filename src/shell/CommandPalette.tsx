@@ -1,13 +1,9 @@
-import { ArrowRight, Box, Search } from 'lucide-react'
+import { ArrowRight, Search } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNamingPack } from '../hooks/useNamingPack'
+import { getIcon } from '../lib/icons'
 import { actions, connectors, views } from '../plugins/registry'
-
-function getIcon(iconName: string): LucideIcon {
-  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
-}
 
 interface CommandItem {
   id: string

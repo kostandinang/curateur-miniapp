@@ -1,15 +1,10 @@
-import { Box, CheckCircle2, Circle, Puzzle, RefreshCw, Settings } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import * as LucideIcons from 'lucide-react'
+import { CheckCircle2, Circle, Puzzle, RefreshCw, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
+import { getIcon } from '../lib/icons'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { connectors } from '../plugins/registry'
 import type { ConnectorPlugin } from '../plugins/schema'
-
-function getIcon(iconName: string): LucideIcon {
-  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
-}
 
 interface MCPServerStatus {
   name: string
