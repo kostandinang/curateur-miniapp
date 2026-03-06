@@ -1,3 +1,5 @@
+import { Box, CheckCircle2, Circle, Puzzle, RefreshCw, Settings } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
@@ -5,8 +7,8 @@ import { useNamingPack } from '../hooks/useNamingPack'
 import { connectors } from '../plugins/registry'
 import type { ConnectorPlugin } from '../plugins/schema'
 
-function getIcon(iconName: string) {
-  return (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Box
+function getIcon(iconName: string): LucideIcon {
+  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
 }
 
 interface MCPServerStatus {
@@ -26,7 +28,6 @@ function TapManager() {
   const [filter, setFilter] = useState<string>('all')
   const [initialLoading, setInitialLoading] = useState<boolean>(true)
 
-  // Fetch current MCP server status on mount
   useEffect(() => {
     const fetchStatus = async () => {
       try {
@@ -85,7 +86,7 @@ function TapManager() {
   if (initialLoading) {
     return (
       <div className="empty">
-        <LucideIcons.RefreshCw size={24} className="spinner" />
+        <RefreshCw size={24} className="spinner" />
       </div>
     )
   }
@@ -94,92 +95,38 @@ function TapManager() {
     <>
       {/* Header */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)' }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.9,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              {pack.connector}
-            </div>
-            <div style={{ fontSize: '32px', fontWeight: 800, marginTop: '4px' }}>
-              {stats.enabled}/{stats.total}
-            </div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>tools enabled</div>
+            <div className="hero-label">{pack.connector}</div>
+            <div className="hero-value">{stats.enabled}/{stats.total}</div>
+            <div className="hero-sub">tools enabled</div>
           </div>
-
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <LucideIcons.Puzzle size={24} />
+          <div className="icon-box lg hero">
+            <Puzzle size={24} />
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            padding: '12px 16px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '12px',
-          }}
-        >
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.enabled}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Active</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-value">{stats.enabled}</div>
+            <div className="stat-label">Active</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.total - stats.enabled}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Available</div>
+          <div className="stat">
+            <div className="stat-value">{stats.total - stats.enabled}</div>
+            <div className="stat-label">Available</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.total}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Total</div>
+          <div className="stat">
+            <div className="stat-value">{stats.total}</div>
+            <div className="stat-label">Total</div>
           </div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '6px',
-          marginBottom: '16px',
-          overflowX: 'auto',
-          padding: '4px 0',
-        }}
-      >
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', overflowX: 'auto', padding: '4px 0' }}>
         {[
           { id: 'all', label: 'All' },
           { id: 'enabled', label: 'Enabled' },
@@ -188,16 +135,10 @@ function TapManager() {
             type="button"
             key={f.id}
             onClick={() => setFilter(f.id)}
+            className="filter-chip"
             style={{
-              padding: '8px 14px',
-              border: 'none',
-              borderRadius: '8px',
               background: filter === f.id ? '#6366f1' : 'var(--c-secondary-bg)',
               color: filter === f.id ? 'white' : 'var(--c-hint)',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
             }}
           >
             {f.label}
@@ -223,79 +164,51 @@ function TapManager() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                {/* Icon */}
                 <div
+                  className="icon-box"
                   style={{
                     width: '40px',
                     height: '40px',
                     borderRadius: '10px',
                     background: isEnabled ? `${connector.color}20` : 'var(--c-secondary-bg)',
                     color: isEnabled ? connector.color : 'var(--c-hint)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
                   }}
                 >
                   <Icon size={20} />
                 </div>
 
-                {/* Content */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      marginBottom: '4px',
-                    }}
-                  >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--c-text)' }}>
                       {connector.name}
                     </span>
                   </div>
-
                   <div style={{ fontSize: '13px', color: 'var(--c-hint)', lineHeight: '1.4' }}>
                     {connector.description}
                   </div>
                 </div>
 
-                {/* Toggle */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <button
-                    type="button"
-                    onClick={() => handleToggle(connector)}
-                    disabled={isLoading}
-                    style={{
-                      padding: '8px 14px',
-                      border: 'none',
-                      borderRadius: '8px',
-                      background: isEnabled ? '#22c55e' : 'var(--c-secondary-bg)',
-                      color: isEnabled ? 'white' : 'var(--c-hint)',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      cursor: isLoading ? 'not-allowed' : 'pointer',
-                      opacity: isLoading ? 0.7 : 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
-                  >
-                    {isLoading ? (
-                      <>
-                        <LucideIcons.RefreshCw size={14} className="spinner" /> ...
-                      </>
-                    ) : isEnabled ? (
-                      <>
-                        <LucideIcons.CheckCircle2 size={14} /> On
-                      </>
-                    ) : (
-                      <>
-                        <LucideIcons.Circle size={14} /> Off
-                      </>
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleToggle(connector)}
+                  disabled={isLoading}
+                  aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${connector.name}`}
+                  className="toggle-btn"
+                  style={{
+                    background: isEnabled ? '#22c55e' : 'var(--c-secondary-bg)',
+                    color: isEnabled ? 'white' : 'var(--c-hint)',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    opacity: isLoading ? 0.7 : 1,
+                  }}
+                >
+                  {isLoading ? (
+                    <><RefreshCw size={14} className="spinner" /> ...</>
+                  ) : isEnabled ? (
+                    <><CheckCircle2 size={14} /> On</>
+                  ) : (
+                    <><Circle size={14} /> Off</>
+                  )}
+                </button>
               </div>
             </div>
           )
@@ -305,7 +218,7 @@ function TapManager() {
       {/* Info */}
       <div className="card" style={{ marginTop: '16px', fontSize: '13px', color: 'var(--c-hint)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-          <LucideIcons.Settings size={14} />
+          <Settings size={14} />
           <span>MCP (Model Context Protocol)</span>
         </div>
         <div>Connect your agent to external tools and data sources</div>

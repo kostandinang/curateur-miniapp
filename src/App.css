@@ -377,3 +377,354 @@
   font-size: 48px;
   margin-bottom: 12px;
 }
+
+/* Hero Banner - gradient header cards used across views */
+.hero-banner {
+  border-radius: 20px;
+  padding: 24px;
+  color: white;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-banner .hero-label {
+  font-size: 13px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-banner .hero-value {
+  font-size: 32px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.hero-banner .hero-sub {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* Stats Row - used in hero banners */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+}
+
+.stats-row .stat {
+  flex: 1;
+  text-align: center;
+}
+
+.stats-row .stat + .stat {
+  border-left: 1px solid rgba(255,255,255,0.2);
+}
+
+.stats-row .stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stats-row .stat-label {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Icon Box - reusable icon container */
+.icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-box.lg {
+  width: 48px;
+  height: 48px;
+}
+
+.icon-box.sm {
+  width: 36px;
+  height: 36px;
+}
+
+.icon-box.hero {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Progress Bar */
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--c-secondary-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Resource Card - used in system monitor */
+.resource-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.resource-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--c-hint);
+}
+
+/* Action Grid */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.action-tile {
+  padding: 16px;
+  border-radius: 16px;
+  border: none;
+  background: var(--c-secondary-bg);
+  color: var(--c-text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  transition: transform 0.2s;
+  font: inherit;
+}
+
+.action-tile .tile-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.action-tile .tile-desc {
+  font-size: 12px;
+  color: var(--c-hint);
+}
+
+/* Chip / Tab Button */
+.chip {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font: inherit;
+}
+
+.chip.muted {
+  background: var(--c-secondary-bg);
+  color: var(--c-hint);
+}
+
+/* Filter chips (smaller) */
+.filter-chip {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font: inherit;
+}
+
+/* Back Button */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: var(--c-text);
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font: inherit;
+}
+
+/* Form Elements */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--c-secondary-bg);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: inherit;
+}
+
+/* Command Palette */
+.cmd-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+.cmd-dialog {
+  width: 90%;
+  max-width: 600px;
+  background: var(--c-bg);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: slideIn 0.15s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cmd-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--c-secondary-bg);
+}
+
+.cmd-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: var(--c-text);
+  outline: none;
+}
+
+.cmd-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.cmd-group-label {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: inherit;
+  color: inherit;
+  font: inherit;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.cmd-item.selected {
+  background: var(--c-secondary-bg);
+}
+
+.cmd-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 2px;
+}
+
+.cmd-item-sub {
+  font-size: 12px;
+  color: var(--c-hint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmd-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--c-secondary-bg);
+  font-size: 12px;
+  color: var(--c-hint);
+}
+
+.cmd-kbd {
+  padding: 2px 6px;
+  background: var(--c-secondary-bg);
+  border-radius: 4px;
+}
+
+.cmd-esc {
+  padding: 4px 8px;
+  background: var(--c-secondary-bg);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--c-hint);
+  font-weight: 500;
+}

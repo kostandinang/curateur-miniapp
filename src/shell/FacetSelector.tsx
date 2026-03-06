@@ -1,3 +1,5 @@
+import { Box, Settings as SettingsIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { type ComponentType, Suspense, lazy, useState } from 'react'
 import { useNamingPack } from '../hooks/useNamingPack'
@@ -7,8 +9,8 @@ import type { ViewPlugin } from '../plugins/schema'
 import Settings from './Settings'
 import WidgetErrorBoundary from './WidgetErrorBoundary'
 
-function getIcon(iconName: string) {
-  return (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Box
+function getIcon(iconName: string): LucideIcon {
+  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
 }
 
 const widgetCache = new Map<string, ComponentType>()
@@ -38,30 +40,16 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
     )
   }
 
-  // Filter views based on enabled list
   const visibleViews = views.filter(v => enabledPlugins.includes(v.id))
 
-  // Show settings view
   if (showSettings) {
     return (
       <>
         <button
           type="button"
           onClick={() => setShowSettings(false)}
-          style={{
-            padding: '10px 16px',
-            border: 'none',
-            borderRadius: '10px',
-            background: 'var(--c-secondary-bg)',
-            color: 'var(--c-text)',
-            fontSize: '14px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            marginBottom: '16px',
-          }}
+          className="chip muted"
+          style={{ marginBottom: '16px' }}
         >
           &larr; Back to Widgets
         </button>
@@ -77,7 +65,6 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
     )
   }
 
-  // Find active widget component
   const activeView = views.find(v => v.id === activeWidget)
   const ActiveComponent = activeView ? getWidgetComponent(activeView) : null
 
@@ -96,20 +83,9 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
           msOverflowStyle: 'none',
         }}
       >
-        <style>{`
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
+        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '8px',
-            width: 'max-content',
-            minWidth: '100%',
-          }}
-        >
+        <div style={{ display: 'flex', gap: '8px', width: 'max-content', minWidth: '100%' }}>
           {visibleViews.map((plugin) => {
             const Icon = getIcon(plugin.icon)
             const isActive = activeWidget === plugin.id
@@ -118,22 +94,12 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
                 type="button"
                 key={plugin.id}
                 onClick={() => setActiveWidget(plugin.id)}
+                aria-label={plugin.name}
+                aria-pressed={isActive}
+                className="chip"
                 style={{
-                  padding: '10px 16px',
-                  border: 'none',
-                  borderRadius: '10px',
                   background: isActive ? plugin.color : 'var(--c-secondary-bg)',
                   color: isActive ? 'white' : 'var(--c-hint)',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  transition: 'all 0.2s',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
                 }}
               >
                 <Icon size={14} />
@@ -142,28 +108,13 @@ function FacetSelector({ activeWidget, setActiveWidget }: FacetSelectorProps) {
             )
           })}
 
-          {/* Settings Button */}
           <button
             type="button"
             onClick={() => setShowSettings(true)}
-            style={{
-              padding: '10px 16px',
-              border: 'none',
-              borderRadius: '10px',
-              background: 'var(--c-secondary-bg)',
-              color: 'var(--c-hint)',
-              fontSize: '13px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}
+            className="chip muted"
+            aria-label="Configure widgets"
           >
-            <LucideIcons.Settings size={14} />
+            <SettingsIcon size={14} />
             Configure
           </button>
         </div>

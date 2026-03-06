@@ -1,9 +1,11 @@
+import { Box, Eye, EyeOff, RotateCcw, Settings as SettingsIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { NAMING_PACKS, type NamingPack } from '../plugins/naming-packs'
 import type { ViewPlugin } from '../plugins/schema'
 
-function getIcon(iconName: string) {
-  return (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Box
+function getIcon(iconName: string): LucideIcon {
+  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
 }
 
 interface SettingsProps {
@@ -23,58 +25,31 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
     <>
       {/* Header */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-        }}
+        className="hero-banner"
+        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <LucideIcons.Settings size={24} />
+          <div className="icon-box lg hero">
+            <SettingsIcon size={24} />
           </div>
           <div>
             <div style={{ fontSize: '24px', fontWeight: 800 }}>Widget Settings</div>
-            <div style={{ fontSize: '15px', opacity: 0.9 }}>Customize your dashboard</div>
+            <div className="hero-sub">Customize your dashboard</div>
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            padding: '12px 16px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '12px',
-          }}
-        >
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '28px', fontWeight: 700 }}>{enabledCount}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Enabled</div>
+        <div className="stats-row">
+          <div className="stat">
+            <div className="stat-value" style={{ fontSize: '28px' }}>{enabledCount}</div>
+            <div className="stat-label">Enabled</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '28px', fontWeight: 700 }}>{totalCount - enabledCount}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Hidden</div>
+          <div className="stat">
+            <div className="stat-value" style={{ fontSize: '28px' }}>{totalCount - enabledCount}</div>
+            <div className="stat-label">Hidden</div>
           </div>
-          <div
-            style={{ flex: 1, textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.2)' }}
-          >
-            <div style={{ fontSize: '28px', fontWeight: 700 }}>{totalCount}</div>
-            <div style={{ fontSize: '11px', opacity: 0.8 }}>Total</div>
+          <div className="stat">
+            <div className="stat-value" style={{ fontSize: '28px' }}>{totalCount}</div>
+            <div className="stat-label">Total</div>
           </div>
         </div>
       </div>
@@ -88,6 +63,8 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
               key={p.id}
               type="button"
               onClick={() => onPackChange(p.id)}
+              aria-label={`Theme: ${p.theme}`}
+              aria-pressed={currentPack.id === p.id}
               style={{
                 padding: '12px 14px',
                 borderRadius: '12px',
@@ -118,6 +95,8 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
               type="button"
               key={view.id}
               onClick={() => onToggle(view.id)}
+              aria-label={`${enabled ? 'Disable' : 'Enable'} ${view.name}`}
+              aria-pressed={enabled}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -136,15 +115,10 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
               }}
             >
               <div
+                className="icon-box"
                 style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '12px',
                   background: enabled ? view.color : 'var(--c-bg)',
                   color: enabled ? 'white' : 'var(--c-hint)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   transition: 'all 0.2s',
                 }}
               >
@@ -152,33 +126,27 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
               </div>
 
               <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: '15px',
-                    color: enabled ? 'var(--c-text)' : 'var(--c-hint)',
-                    marginBottom: '2px',
-                  }}
-                >
+                <div style={{
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  color: enabled ? 'var(--c-text)' : 'var(--c-hint)',
+                  marginBottom: '2px',
+                }}>
                   {view.name}
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--c-hint)' }}>{view.description}</div>
               </div>
 
               <div
+                className="icon-box sm"
                 style={{
-                  width: '36px',
-                  height: '36px',
                   borderRadius: '50%',
                   background: enabled ? view.color : 'var(--c-bg)',
                   color: enabled ? 'white' : 'var(--c-hint)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   transition: 'all 0.2s',
                 }}
               >
-                {enabled ? <LucideIcons.Eye size={18} /> : <LucideIcons.EyeOff size={18} />}
+                {enabled ? <Eye size={18} /> : <EyeOff size={18} />}
               </div>
             </button>
           )
@@ -187,26 +155,8 @@ function Settings({ views, isEnabled, onToggle, onReset, currentPack, onPackChan
 
       {/* Reset */}
       <div style={{ display: 'flex', gap: '10px' }}>
-        <button
-          type="button"
-          onClick={onReset}
-          style={{
-            flex: 1,
-            padding: '14px',
-            border: 'none',
-            borderRadius: '12px',
-            background: 'var(--c-secondary-bg)',
-            color: 'var(--c-text)',
-            fontSize: '15px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-          }}
-        >
-          <LucideIcons.RotateCcw size={18} />
+        <button type="button" onClick={onReset} className="btn btn-secondary" aria-label="Reset to default widgets">
+          <RotateCcw size={18} />
           Reset to Defaults
         </button>
       </div>

@@ -1,18 +1,19 @@
+import { ArrowRight, Box, Search } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNamingPack } from '../hooks/useNamingPack'
 import { actions, connectors, views } from '../plugins/registry'
-import type { PluginManifest } from '../plugins/schema'
 
-function getIcon(iconName: string) {
-  return (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Box
+function getIcon(iconName: string): LucideIcon {
+  return (LucideIcons as unknown as Record<string, LucideIcon>)[iconName] || Box
 }
 
 interface CommandItem {
   id: string
   name: string
   subtitle: string
-  icon: LucideIcons.LucideIcon
+  icon: LucideIcon
   color: string
   action: string
 }
@@ -31,7 +32,6 @@ interface CommandPaletteProps {
 function buildCommandsFromRegistry(pack: { view: string; action: string; connector: string }) {
   const groups: { name: string; commands: CommandItem[] }[] = []
 
-  // Group 1: views -> action "widget:<id>"
   if (views.length > 0) {
     groups.push({
       name: pack.view,
@@ -46,7 +46,6 @@ function buildCommandsFromRegistry(pack: { view: string; action: string; connect
     })
   }
 
-  // Group 2: actions -> action "tool:<id>"
   if (actions.length > 0) {
     groups.push({
       name: pack.action,
@@ -61,7 +60,6 @@ function buildCommandsFromRegistry(pack: { view: string; action: string; connect
     })
   }
 
-  // Group 3: connectors -> action "connector:<id>"
   if (connectors.length > 0) {
     groups.push({
       name: pack.connector,
@@ -92,7 +90,6 @@ function CommandPalette({
 
   const commandGroups = useMemo(() => buildCommandsFromRegistry(pack), [pack])
 
-  // Flatten all commands for search
   const allCommands = useMemo((): FlatCommand[] => {
     const commands: FlatCommand[] = []
     commandGroups.forEach((group) => {
@@ -103,10 +100,8 @@ function CommandPalette({
     return commands
   }, [commandGroups])
 
-  // Filter commands based on search
   const filteredCommands = useMemo((): FlatCommand[] => {
     if (!search.trim()) {
-      // Show recent commands first, then all
       const recent = recentCommands
         .map((id) => allCommands.find((c) => c.id === id))
         .filter((c): c is FlatCommand => Boolean(c))
@@ -123,7 +118,6 @@ function CommandPalette({
     )
   }, [search, allCommands, recentCommands])
 
-  // Group filtered commands
   const groupedCommands = useMemo((): Record<string, FlatCommand[]> => {
     const groups: Record<string, FlatCommand[]> = {}
     filteredCommands.forEach((cmd) => {
@@ -135,7 +129,6 @@ function CommandPalette({
 
   const handleSelect = useCallback(
     (command: FlatCommand) => {
-      // Add to recent commands
       setRecentCommands((prev) => {
         const updated = [command.id, ...prev.filter((id) => id !== command.id)].slice(0, 5)
         return updated
@@ -148,7 +141,6 @@ function CommandPalette({
     [onSelect, onClose],
   )
 
-  // Handle keyboard navigation
   useEffect(() => {
     if (!isOpen) return
 
@@ -172,7 +164,6 @@ function CommandPalette({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, filteredCommands, selectedIndex, onClose, handleSelect])
 
-  // Reset selection when search changes
   useEffect(() => {
     setSelectedIndex(0)
   }, [search])
@@ -182,116 +173,37 @@ function CommandPalette({
   let globalIndex = 0
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: overlay backdrop dismisses dialog on click
     <div
       role="presentation"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        paddingTop: '15vh',
-      }}
+      className="cmd-overlay"
       onClick={onClose}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          onClose()
-        }
-      }}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
     >
       <div
         role="dialog"
-        style={{
-          width: '90%',
-          maxWidth: '600px',
-          background: 'var(--c-bg)',
-          borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          overflow: 'hidden',
-          animation: 'slideIn 0.15s ease-out',
-        }}
+        aria-label="Command palette"
+        className="cmd-dialog"
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.stopPropagation()
-          }
-        }}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation() }}
       >
-        <style>{`
-          @keyframes slideIn {
-            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-          }
-        `}</style>
-
         {/* Search Input */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--c-secondary-bg)',
-          }}
-        >
-          <LucideIcons.Search size={20} style={{ color: 'var(--c-hint)' }} />
+        <div className="cmd-search">
+          <Search size={20} style={{ color: 'var(--c-hint)' }} />
           <input
             type="text"
             placeholder="Search commands..."
+            aria-label="Search commands"
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'transparent',
-              fontSize: '16px',
-              color: 'var(--c-text)',
-              outline: 'none',
-            }}
           />
-          <div
-            style={{
-              padding: '4px 8px',
-              background: 'var(--c-secondary-bg)',
-              borderRadius: '6px',
-              fontSize: '12px',
-              color: 'var(--c-hint)',
-              fontWeight: 500,
-            }}
-          >
-            ESC
-          </div>
+          <span className="cmd-esc">ESC</span>
         </div>
 
         {/* Commands List */}
-        <div
-          style={{
-            maxHeight: '400px',
-            overflowY: 'auto',
-            padding: '8px',
-          }}
-        >
+        <div className="cmd-list">
           {Object.entries(groupedCommands).map(([groupName, commands]) => (
             <div key={groupName} style={{ marginBottom: '8px' }}>
-              <div
-                style={{
-                  padding: '8px 12px',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  color: 'var(--c-hint)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                }}
-              >
-                {groupName}
-              </div>
+              <div className="cmd-group-label">{groupName}</div>
 
               {commands.map((cmd) => {
                 const Icon = cmd.icon
@@ -303,6 +215,7 @@ function CommandPalette({
                     type="button"
                     key={cmd.id}
                     tabIndex={0}
+                    aria-label={`${cmd.name}: ${cmd.subtitle}`}
                     onClick={() => handleSelect(cmd)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -311,63 +224,21 @@ function CommandPalette({
                       }
                     }}
                     onMouseEnter={() => setSelectedIndex(index)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      background: isSelected ? 'var(--c-secondary-bg)' : 'transparent',
-                      transition: 'background 0.1s',
-                      border: 'none',
-                      width: '100%',
-                      textAlign: 'inherit',
-                      color: 'inherit',
-                      font: 'inherit',
-                    }}
+                    className={`cmd-item ${isSelected ? 'selected' : ''}`}
                   >
                     <div
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '8px',
-                        background: `${cmd.color}15`,
-                        color: cmd.color,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
+                      className="icon-box sm"
+                      style={{ background: `${cmd.color}15`, color: cmd.color }}
                     >
                       <Icon size={18} />
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: '14px',
-                          fontWeight: 600,
-                          color: 'var(--c-text)',
-                          marginBottom: '2px',
-                        }}
-                      >
-                        {cmd.name}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '12px',
-                          color: 'var(--c-hint)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {cmd.subtitle}
-                      </div>
+                      <div className="cmd-item-title">{cmd.name}</div>
+                      <div className="cmd-item-sub">{cmd.subtitle}</div>
                     </div>
 
-                    {isSelected && <LucideIcons.ArrowRight size={16} style={{ color: 'var(--c-hint)' }} />}
+                    {isSelected && <ArrowRight size={16} style={{ color: 'var(--c-hint)' }} />}
                   </button>
                 )
               })}
@@ -375,52 +246,20 @@ function CommandPalette({
           ))}
 
           {filteredCommands.length === 0 && (
-            <div
-              style={{
-                padding: '40px',
-                textAlign: 'center',
-                color: 'var(--c-hint)',
-              }}
-            >
-              <div style={{ fontSize: '14px' }}>No commands found</div>
+            <div style={{ padding: '40px', textAlign: 'center', color: 'var(--c-hint)', fontSize: '14px' }}>
+              No commands found
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            padding: '10px 16px',
-            borderTop: '1px solid var(--c-secondary-bg)',
-            fontSize: '12px',
-            color: 'var(--c-hint)',
-          }}
-        >
+        <div className="cmd-footer">
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span
-              style={{
-                padding: '2px 6px',
-                background: 'var(--c-secondary-bg)',
-                borderRadius: '4px',
-              }}
-            >
-              &uarr;&darr;
-            </span>
+            <span className="cmd-kbd">&uarr;&darr;</span>
             <span>Navigate</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span
-              style={{
-                padding: '2px 6px',
-                background: 'var(--c-secondary-bg)',
-                borderRadius: '4px',
-              }}
-            >
-              &crarr;
-            </span>
+            <span className="cmd-kbd">&crarr;</span>
             <span>Select</span>
           </div>
           <div style={{ marginLeft: 'auto' }}>Curateur Command Palette</div>
