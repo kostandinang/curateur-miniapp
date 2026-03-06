@@ -9,7 +9,8 @@
     "outDir": "dist-server",
     "noEmit": true,
     "types": ["node"],
-    "isolatedModules": true
+    "isolatedModules": true,
+    "resolveJsonModule": true
   },
-  "include": ["api-server.ts"]
+  "include": ["api/**/*.ts", "src/plugins/*/routes.ts", "src/plugins/schema.ts"]
 }
