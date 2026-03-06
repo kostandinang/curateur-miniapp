@@ -173,17 +173,12 @@ function Wellbeing() {
     <>
       {/* Header with dynamic gradient based on time */}
       <div
+        className="hero-banner"
         style={{
           background:
             timeOfDay === 'morning'
               ? 'linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ec4899 100%)'
               : 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%)',
-          borderRadius: '20px',
-          padding: '24px',
-          color: 'white',
-          marginBottom: '16px',
-          position: 'relative',
-          overflow: 'hidden',
         }}
       >
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -206,39 +201,18 @@ function Wellbeing() {
             How are you feeling?
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              gap: '12px',
-              padding: '12px 16px',
-              background: 'rgba(255,255,255,0.15)',
-              borderRadius: '12px',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.streak}</div>
-              <div style={{ fontSize: '11px', opacity: 0.8 }}>Day Streak 🔥</div>
+          <div className="stats-row" style={{ backdropFilter: 'blur(10px)' }}>
+            <div className="stat">
+              <div className="stat-value">{stats.streak}</div>
+              <div className="stat-label">Day Streak 🔥</div>
             </div>
-            <div
-              style={{
-                flex: 1,
-                textAlign: 'center',
-                borderLeft: '1px solid rgba(255,255,255,0.2)',
-              }}
-            >
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.avg}</div>
-              <div style={{ fontSize: '11px', opacity: 0.8 }}>Avg Mood</div>
+            <div className="stat">
+              <div className="stat-value">{stats.avg}</div>
+              <div className="stat-label">Avg Mood</div>
             </div>
-            <div
-              style={{
-                flex: 1,
-                textAlign: 'center',
-                borderLeft: '1px solid rgba(255,255,255,0.2)',
-              }}
-            >
-              <div style={{ fontSize: '20px', fontWeight: 700 }}>{stats.total}</div>
-              <div style={{ fontSize: '11px', opacity: 0.8 }}>Check-ins</div>
+            <div className="stat">
+              <div className="stat-value">{stats.total}</div>
+              <div className="stat-label">Check-ins</div>
             </div>
           </div>
         </div>
