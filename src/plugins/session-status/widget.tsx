@@ -118,6 +118,66 @@ function SessionStatus() {
 
   return (
     <>
+      {/* User Identity Card */}
+      <div className="card" style={{ marginBottom: '16px', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: 'white' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: 56,
+            height: 56,
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '28px'
+          }}>
+            👨‍💻
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: '18px', marginBottom: '2px' }}>Kostandin</div>
+            <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '4px' }}>Engineer & Startups</div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{
+                padding: '3px 10px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                fontSize: '11px',
+                fontWeight: 500
+              }}>AI Native</span>
+              <span style={{
+                padding: '3px 10px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                fontSize: '11px',
+                fontWeight: 500
+              }}>Product Focused</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style={{
+          marginTop: '16px',
+          paddingTop: '16px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          display: 'flex',
+          gap: '16px',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
+            <span style={{ opacity: 0.6 }}>📱</span> iPhone 17
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
+            <span style={{ opacity: 0.6 }}>💻</span> MacBook Pro
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
+            <span style={{ opacity: 0.6 }}>🤖</span> OpenClaw
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
+            <span style={{ opacity: 0.6 }}>🧠</span> Claude
+          </div>
+        </div>
+      </div>
+
       {/* Header - Gateway Status */}
       <div
         className="hero-banner"
