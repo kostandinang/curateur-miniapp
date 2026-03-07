@@ -56,18 +56,38 @@ interface StatusResponse {
   services: string[]
 }
 
+interface IdentityResponse {
+  name: string
+  emoji: string
+  avatar: string
+  role: string
+  focus: string
+  vibe: string
+  style: string
+  devices: string[]
+  tags: string[]
+}
+
 function SessionStatus() {
   const [status, setStatus] = useState<StatusResponse | null>(null)
+  const [identity, setIdentity] = useState<IdentityResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchStatus = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await apiFetch('/api/status')
-      if (!response.ok) throw new Error('Failed')
-      const data: StatusResponse = await response.json()
-      setStatus(data)
+      const [statusRes, identityRes] = await Promise.all([
+        apiFetch('/api/status'),
+        apiFetch('/api/identity')
+      ])
+      if (!statusRes.ok) throw new Error('Failed')
+      const statusData: StatusResponse = await statusRes.json()
+      setStatus(statusData)
+      if (identityRes.ok) {
+        const identityData: IdentityResponse = await identityRes.json()
+        setIdentity(identityData)
+      }
       setError(null)
     } catch (_err) {
       setError('Not connected')
@@ -131,51 +151,41 @@ function SessionStatus() {
             justifyContent: 'center',
             fontSize: '28px'
           }}>
-            👨‍💻
+            {identity?.avatar || identity?.emoji || '🤖'}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '18px', marginBottom: '2px' }}>Kostandin</div>
-            <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '4px' }}>Engineer & Startups</div>
+            <div style={{ fontWeight: 700, fontSize: '18px', marginBottom: '2px' }}>{identity?.name || 'Anonymous'}</div>
+            <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '4px' }}>{identity?.role || 'User'}</div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{
-                padding: '3px 10px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: 500
-              }}>AI Native</span>
-              <span style={{
-                padding: '3px 10px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: 500
-              }}>Product Focused</span>
+              {(identity?.tags || []).map((tag, i) => (
+                <span key={i} style={{
+                  padding: '3px 10px',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: 500
+                }}>{tag}</span>
+              ))}
             </div>
           </div>
         </div>
         
-        <div style={{
-          marginTop: '16px',
-          paddingTop: '16px',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex',
-          gap: '16px',
-          flexWrap: 'wrap'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
-            <span style={{ opacity: 0.6 }}>📱</span> iPhone 17
+        {(identity?.devices || []).length > 0 && (
+          <div style={{
+            marginTop: '16px',
+            paddingTop: '16px',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            display: 'flex',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            {(identity?.devices || []).map((device, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
+                {device}
+              </div>
+            ))}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
-            <span style={{ opacity: 0.6 }}>💻</span> MacBook Pro
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
-            <span style={{ opacity: 0.6 }}>🤖</span> OpenClaw
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', opacity: 0.9 }}>
-            <span style={{ opacity: 0.6 }}>🧠</span> Claude
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Header - Gateway Status */}
