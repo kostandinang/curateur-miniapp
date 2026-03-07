@@ -16,6 +16,7 @@ const serverDir = path.dirname(new URL(import.meta.url).pathname)
 const ALLOWED_SKILL_IDS = loadAllowedSkillIds(path.join(serverDir, '..', 'src', 'plugins'))
 
 const OPENCLAW_CONFIG_PATH = process.env.OPENCLAW_CONFIG_PATH || '/root/.openclaw/openclaw.json'
+const IDENTITY_PATH = process.env.IDENTITY_PATH || '/root/.openclaw/workspace/IDENTITY.md'
 
 // Plugin routes
 import systemMonitorRoutes from '../src/plugins/system-monitor/routes'
@@ -200,6 +201,123 @@ app.post('/api/mcp/:id/config', async (c) => {
     return c.json({ id: serverId, enabled: body.enabled, saved: true })
   } catch {
     return c.json({ error: 'Failed to update MCP config' }, 500)
+  }
+})
+
+// Identity endpoint - reads from IDENTITY.md
+app.get('/api/identity', async (c) => {
+  try {
+    if (!fileExists(IDENTITY_PATH)) {
+      return c.json({ error: 'Identity file not found' }, 404)
+    }
+    const raw = readFileSync(IDENTITY_PATH, 'utf8')
+    // Parse markdown into structured data
+    const identity: Record<string, string | string[]> = {}
+    const devices: string[] = []
+    const tags: string[] = []
+    let inDevicesSection = false
+    let inTagsSection = false
+    let lastSection = ''
+
+    for (let i = 0; i < raw.split('\n').length; i++) {
+      const line = raw.split('\n')[i]
+      const trimmed = line.trim()
+      if (!trimmed) {
+        inDevicesSection = false
+        inTagsSection = false
+        lastSection = ''
+        continue
+      }
+
+      // Check for section headers
+      if (trimmed === '## Devices') {
+        inDevicesSection = true
+        continue
+      }
+      if (trimmed === '## Tags') {
+        inTagsSection = true
+        continue
+      }
+      if (trimmed.startsWith('## ')) {
+        inDevicesSection = false
+        inTagsSection = false
+        lastSection = trimmed.slice(3).trim().toLowerCase()
+        continue
+      }
+
+      // Handle device entries
+      if (inDevicesSection && trimmed.startsWith('- ')) {
+        devices.push(trimmed.slice(2).trim())
+        continue
+      }
+
+      // Handle tag entries  
+      if (inTagsSection && trimmed.startsWith('- ')) {
+        tags.push(trimmed.slice(2).trim())
+        continue
+      }
+
+      // Handle section values (Role, Focus, Style, etc.)
+      if (lastSection && !trimmed.startsWith('- ') && !trimmed.startsWith('#')) {
+        switch (lastSection) {
+          case 'role':
+            identity.role = trimmed
+            break
+          case 'focus':
+            identity.focus = trimmed
+            break
+          case 'style':
+            identity.style = trimmed
+            break
+        }
+        lastSection = ''
+        continue
+      }
+
+      // Remove markdown bold syntax **text**
+      const cleanLine = trimmed.replace(/\*\*/g, '').trim()
+
+      // Check for key-value pairs at top level (bullet points with key: value)
+      if (cleanLine.startsWith('- ')) {
+        const content = cleanLine.slice(2).trim()
+        if (content.includes(':')) {
+          const [key, ...valueParts] = content.split(':')
+          const cleanKey = key.trim()
+          const value = valueParts.join(':').trim()
+          if (cleanKey && value) {
+            switch (cleanKey.toLowerCase()) {
+              case 'name':
+                identity.name = value
+                break
+              case 'emoji':
+                identity.emoji = value
+                break
+              case 'avatar':
+                identity.avatar = value
+                break
+              case 'vibe':
+                identity.vibe = value
+                break
+            }
+          }
+        }
+      }
+    }
+
+    return c.json({
+      name: identity.name || 'Anonymous',
+      emoji: identity.emoji || '🤖',
+      avatar: identity.avatar || identity.emoji || '🤖',
+      role: identity.role || '',
+      focus: identity.focus || '',
+      vibe: identity.vibe || '',
+      style: identity.style || '',
+      devices: devices,
+      tags: tags.length > 0 ? tags : ['AI Native', 'Product Focused'],
+      raw: identity
+    })
+  } catch {
+    return c.json({ error: 'Failed to read identity' }, 500)
   }
 })
 
