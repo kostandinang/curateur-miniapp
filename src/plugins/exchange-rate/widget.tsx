@@ -1,17 +1,21 @@
 import { ArrowUpRight, Bell, RefreshCw, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
 
-const EXCHANGE_API_URL = 'https://open.er-api.com/v6/latest/USD'
 const DEFAULT_THRESHOLD = 83
-const REFRESH_INTERVAL_MS = 5 * 60 * 1000
+const REFRESH_INTERVAL_MS = 60 * 1000 // 1 minute (server caches for 5 min)
 
-interface ExchangeRateApiResponse {
-  rates: Record<string, number>
-  time_last_update_utc: string
+interface ExchangeRateResponse {
+  rate: number
+  source: string
+  cached: boolean
+  timestamp: string
+  stale?: boolean
 }
 
 function ExchangeRate() {
   const [rate, setRate] = useState<number | null>(null)
+  const [source, setSource] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [threshold, setThreshold] = useState<number>(DEFAULT_THRESHOLD)
@@ -20,10 +24,12 @@ function ExchangeRate() {
   const fetchRate = async (): Promise<void> => {
     setLoading(true)
     try {
-      const res = await fetch(EXCHANGE_API_URL)
-      const data: ExchangeRateApiResponse = await res.json()
-      setRate(data.rates.ALL)
-      setLastUpdate(data.time_last_update_utc)
+      const res = await apiFetch('/api/exchange-rate')
+      if (!res.ok) throw new Error('Failed')
+      const data: ExchangeRateResponse = await res.json()
+      setRate(data.rate)
+      setSource(data.source)
+      setLastUpdate(data.timestamp)
       setError(null)
     } catch (_err) {
       setError('Failed to fetch')
@@ -48,7 +54,7 @@ function ExchangeRate() {
       <div className="rate-card">
         <div className="label">USD → ALL</div>
 
-        {loading ? (
+        {loading && rate === null ? (
           <div style={{ padding: '20px' }}>
             <RefreshCw size={32} className="spinner" style={{ opacity: 0.7 }} />
           </div>
@@ -58,6 +64,9 @@ function ExchangeRate() {
           <>
             <div className="value">{parseFloat(String(rate)).toFixed(2)}</div>
             <div className="sub">1 USD = {parseFloat(String(rate)).toFixed(4)} ALL</div>
+            <div style={{ fontSize: '11px', opacity: 0.6, marginTop: '4px' }}>
+              via {source}
+            </div>
 
             <div className="badge">
               {isHit ? (
@@ -131,7 +140,7 @@ function ExchangeRate() {
 
         <div className="info-item">
           <div className="label">Refresh</div>
-          <div className="value">5 min</div>
+          <div className="value">1 min</div>
         </div>
       </div>
 

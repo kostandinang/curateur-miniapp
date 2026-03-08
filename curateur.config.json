@@ -1,0 +1,36 @@
+{
+  "namingPack": 2,
+  "plugins": {
+    "views": [
+      "exchange-rate",
+      "system-monitor",
+      "cron-manager",
+      "omad-tracker",
+      "cost-heatmap",
+      "voice-notes",
+      "voice-to-text",
+      "job-search",
+      "flashcards",
+      "wellbeing",
+      "project-updates",
+      "session-status"
+    ],
+    "actions": [
+      "loom-transcript",
+      "search-memory",
+      "system-status",
+      "new-session",
+      "reset-session"
+    ],
+    "connectors": [
+      "mcp-filesystem",
+      "mcp-github",
+      "mcp-postgres",
+      "mcp-fetch",
+      "mcp-brave-search",
+      "mcp-puppeteer",
+      "mcp-git",
+      "mcp-slack"
+    ]
+  }
+}

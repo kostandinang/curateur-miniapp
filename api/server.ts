@@ -159,6 +159,78 @@ app.post('/api/message', async (c) => {
   }
 })
 
+// Exchange rate endpoint with caching
+let exchangeRateCache: { rate: number; timestamp: number; source: string } | null = null
+const EXCHANGE_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+app.get('/api/exchange-rate', async (c) => {
+  try {
+    // Return cached rate if still fresh
+    if (exchangeRateCache && Date.now() - exchangeRateCache.timestamp < EXCHANGE_CACHE_TTL_MS) {
+      return c.json({
+        rate: exchangeRateCache.rate,
+        source: exchangeRateCache.source,
+        cached: true,
+        timestamp: new Date(exchangeRateCache.timestamp).toISOString()
+      })
+    }
+
+    // Try multiple APIs in order
+    const apis = [
+      {
+        name: 'frankfurter',
+        url: 'https://api.frankfurter.app/latest?from=USD&to=ALL',
+        extract: (data: { rates?: { ALL?: number } }) => data.rates?.ALL
+      },
+      {
+        name: 'open.er-api',
+        url: 'https://open.er-api.com/v6/latest/USD',
+        extract: (data: { rates?: { ALL?: number } }) => data.rates?.ALL
+      },
+      {
+        name: 'exchangerate-api',
+        url: 'https://api.exchangerate-api.com/v4/latest/USD',
+        extract: (data: { rates?: { ALL?: number } }) => data.rates?.ALL
+      }
+    ]
+
+    for (const api of apis) {
+      try {
+        const res = await fetch(api.url, { signal: AbortSignal.timeout(5000) })
+        if (!res.ok) continue
+        const data = await res.json()
+        const rate = api.extract(data)
+        if (rate && typeof rate === 'number' && rate > 0) {
+          exchangeRateCache = { rate, timestamp: Date.now(), source: api.name }
+          return c.json({
+            rate,
+            source: api.name,
+            cached: false,
+            timestamp: new Date().toISOString()
+          })
+        }
+      } catch {
+        continue
+      }
+    }
+
+    // Fallback to cache even if stale
+    if (exchangeRateCache) {
+      return c.json({
+        rate: exchangeRateCache.rate,
+        source: exchangeRateCache.source,
+        cached: true,
+        stale: true,
+        timestamp: new Date(exchangeRateCache.timestamp).toISOString()
+      })
+    }
+
+    return c.json({ error: 'Failed to fetch exchange rate' }, 500)
+  } catch {
+    return c.json({ error: 'Failed to fetch exchange rate' }, 500)
+  }
+})
+
 // MCP config endpoints
 app.get('/api/mcp', async (c) => {
   try {
