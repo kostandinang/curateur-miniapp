@@ -25,6 +25,7 @@ import mcpFetch from './mcp-fetch/manifest.json'
 import mcpSlack from './mcp-slack/manifest.json'
 import mcpBraveSearch from './mcp-brave-search/manifest.json'
 import mcpPuppeteer from './mcp-puppeteer/manifest.json'
+import nginxLogs from './nginx-logs/manifest.json'
 
 export const plugins: PluginManifest[] = [
   exchangeRate, systemMonitor, cronManager, omadTracker, costHeatmap,
@@ -32,7 +33,7 @@ export const plugins: PluginManifest[] = [
   projectUpdates, sessionStatus,
   loomTranscript, searchMemory, systemStatus, newSession, resetSession,
   mcpFilesystem, mcpGithub, mcpGit, mcpPostgres, mcpFetch,
-  mcpSlack, mcpBraveSearch, mcpPuppeteer,
+  mcpSlack, mcpBraveSearch, mcpPuppeteer, nginxLogs,
 ] as PluginManifest[]
 
 export const views = plugins.filter((p): p is ViewPlugin => p.type === 'view')

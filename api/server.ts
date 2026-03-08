@@ -29,6 +29,7 @@ import voiceNotesRoutes from '../src/plugins/voice-notes/routes'
 import voiceToTextRoutes from '../src/plugins/voice-to-text/routes'
 import cronManagerRoutes from '../src/plugins/cron-manager/routes'
 import sessionStatusRoutes from '../src/plugins/session-status/routes'
+import nginxLogsRoutes from '../src/plugins/nginx-logs/routes'
 
 const PORT = parseInt(process.env.PORT || '3002', 10)
 
@@ -49,6 +50,7 @@ app.route('/api/voice', voiceNotesRoutes)
 app.route('/api/voice-transcripts', voiceToTextRoutes)
 app.route('/api/crons', cronManagerRoutes)
 app.route('/api/status', sessionStatusRoutes)
+app.route('/api/nginx-logs', nginxLogsRoutes)
 
 // --- Shared endpoints ---
 

@@ -1,0 +1,16 @@
+{
+  "id": "nginx-logs",
+  "name": "Nginx Logs",
+  "type": "view",
+  "icon": "Globe",
+  "color": "#059669",
+  "description": "Live nginx access & error log feed",
+  "widget": {
+    "component": "./widget.tsx",
+    "defaultEnabled": true
+  },
+  "api": {
+    "routes": "./routes.ts",
+    "prefix": "/api/nginx-logs"
+  }
+}

@@ -16,7 +16,8 @@ dist-ssr
 
 # Nginx
 nginx.conf
-nginx-*
+/nginx-*
+!src/plugins/nginx-logs/
 
 # Environment files
 .env
