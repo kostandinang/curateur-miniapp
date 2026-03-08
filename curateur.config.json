@@ -13,7 +13,8 @@
       "flashcards",
       "wellbeing",
       "project-updates",
-      "session-status"
+      "session-status",
+      "nginx-logs"
     ],
     "actions": [
       "loom-transcript",
